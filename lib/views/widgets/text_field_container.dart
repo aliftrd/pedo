@@ -33,7 +33,7 @@ class TextInputContainer extends StatelessWidget {
             height: 50,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              color: backgroundColorInput,
+              color: backgroundInput,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Center(

@@ -1,29 +1,60 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:pedo/core/providers/auth_provider.dart';
+import 'package:pedo/views/screens/home_page.dart';
+import 'package:pedo/views/screens/page_switcher.dart';
 import 'package:pedo/views/widgets/text_field_container.dart';
 import 'package:pedo/constant/themes.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
+  static String route = '/login';
+
+  const LoginPage({super.key});
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController _emailController = TextEditingController(text: ''),
+  final TextEditingController _emailController =
+          TextEditingController(text: ''),
       _passwordController = TextEditingController(text: '');
 
   @override
+  void dispose() {
+    _emailController;
+    _passwordController;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.of(context).size.width;
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
 
-    signInHandle() async {
-      Navigator.pushReplacementNamed(context, '/home');
-    }
+    void signInHandle() async {
+      var email = _emailController.text, password = _passwordController.text;
 
-    goToRegister() {
-      Navigator.pushReplacementNamed(context, '/register');
+      var response = await authProvider.login(
+        email: email,
+        password: password,
+      );
+
+      if (response != true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: colorDanger,
+            content: Text(response),
+          ),
+        );
+
+        return;
+      }
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => PageSwitcher()),
+      );
     }
 
     Widget header() {
@@ -48,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           Text(
             "Dapatkan peliharaanmu sekarang!",
-            style: subTitleTextStyle.copyWith(
+            style: subtitleTextStyle.copyWith(
               fontSize: 16,
             ),
           ),
@@ -58,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
 
     Widget emailInput() {
       return TextInputContainer(
-        icons: Icon(Icons.email, color: primaryColor),
+        icons: Icon(Icons.email, color: colorPrimary),
         label: "E-mail",
         textFormField: TextFormField(
           controller: _emailController,
@@ -74,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
     Widget passwordInput() {
       return TextInputContainer(
         margin: const EdgeInsets.only(top: 15),
-        icons: Icon(Icons.lock, color: primaryColor),
+        icons: Icon(Icons.lock, color: colorPrimary),
         label: "Password",
         textFormField: TextFormField(
           controller: _passwordController,
@@ -95,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
         margin: const EdgeInsets.only(top: 20),
         child: TextButton(
           style: TextButton.styleFrom(
-            backgroundColor: primaryColor,
+            backgroundColor: colorPrimary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -104,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Text(
             "Masuk",
             style: primaryTextStyle.copyWith(
-              color: darkColor,
+              color: colorDark,
               fontSize: 16,
               fontWeight: medium,
             ),
@@ -113,48 +144,54 @@ class _LoginPageState extends State<LoginPage> {
       );
     }
 
-    return Scaffold(
-      backgroundColor: backgroundColorPrimary,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.only(bottom: defaultMargin),
-          physics: const BouncingScrollPhysics(),
-          child: Container(
-            width: width,
-            margin: EdgeInsets.symmetric(
-              horizontal: defaultMargin,
-            ),
-            child: Column(
-              children: [
-                header(),
-                emailInput(),
-                passwordInput(),
-                signInButton(),
-                GestureDetector(
-                  onTap: goToRegister,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10, bottom: 10),
-                    child: Text.rich(
-                      TextSpan(
-                        text: "Belum punya akun? ",
-                        style: subTitleTextStyle.copyWith(
-                          color: darkColor,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: "Daftar",
-                            style: primaryTextStyle.copyWith(
-                              color: primaryColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+    Widget registerButton() {
+      return Container(
+        width: screenWidth,
+        height: 40,
+        alignment: Alignment.center,
+        child: TextButton(
+          onPressed: () {
+            Navigator.of(context).pushNamed('/register');
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Belum punya akun? ',
+                style: primaryTextStyle.copyWith(
+                  fontSize: 14,
+                  fontWeight: medium,
                 ),
-              ],
-            ),
+              ),
+              Text(
+                'Daftar',
+                style: primaryTextStyle.copyWith(
+                  color: colorPrimary,
+                  fontSize: 14,
+                  fontWeight: medium,
+                ),
+              ),
+            ],
           ),
+        ),
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: background,
+      bottomNavigationBar: registerButton(),
+      body: SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.symmetric(horizontal: defaultMargin),
+          children: [
+            header(),
+            emailInput(),
+            passwordInput(),
+            signInButton(),
+          ],
         ),
       ),
     );

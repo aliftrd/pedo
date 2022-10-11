@@ -5,28 +5,31 @@ import 'package:flutter/cupertino.dart';
 double defaultMargin = 30.0;
 
 // Color
-Color primaryColor = const Color(0xFFFF9F10);
-Color darkColor = const Color(0xFF1B2430);
-Color subTitleColor = const Color(0xFF6F6F6F);
-Color hintColor = const Color(0xFF8F8F8F);
+Color colorPrimary = const Color(0xFFFF9F10);
+Color colorDark = const Color(0xFF2D314C);
+Color colorLight = const Color(0xFFFFFFFF);
+Color colorSuccess = const Color(0xFF42855B);
+Color colorDanger = const Color(0xFFDD5353);
+Color colorSubtitle = const Color(0xFF6B6F8A);
+Color colorHint = const Color(0xFFA3A6B9);
 
-Color backgroundColorPrimary = const Color(0xFFF1F1F1);
-Color backgroundColorInput = const Color(0xFFFFF7EC);
+Color background = const Color(0xFFF1F1F1);
+Color backgroundInput = const Color(0xFFFFF7EC);
 
 // Typography
 TextStyle primaryTextStyle = TextStyle(
   fontFamily: 'Poppins',
-  color: darkColor,
+  color: colorDark,
 );
 
-TextStyle subTitleTextStyle = TextStyle(
+TextStyle subtitleTextStyle = TextStyle(
   fontFamily: 'Poppins',
-  color: subTitleColor,
+  color: colorSubtitle,
 );
 
 TextStyle hintTextStyle = TextStyle(
   fontFamily: 'Poppins',
-  color: hintColor,
+  color: colorHint,
 );
 
 // Font Weight
