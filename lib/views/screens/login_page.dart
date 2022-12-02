@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:pedo/core/models/user_model.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
-import 'package:pedo/views/screens/home_page.dart';
+import 'package:pedo/core/providers/user_provider.dart';
+import 'package:pedo/utils/secure_storage_service.dart';
+import 'package:pedo/utils/toast.dart';
+import 'package:pedo/utils/validation.dart';
 import 'package:pedo/views/screens/page_switcher.dart';
-import 'package:pedo/views/widgets/text_field_container.dart';
+import 'package:pedo/views/screens/register_page.dart';
+import 'package:pedo/views/widgets/loading_button.dart';
+import 'package:pedo/views/widgets/text_input_container.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +26,12 @@ class _LoginPageState extends State<LoginPage> {
           TextEditingController(text: ''),
       _passwordController = TextEditingController(text: '');
 
+  bool isLoading = false, validator = false;
+  Map<String, dynamic> validatorMessage = {
+    'email': '',
+    'password': '',
+  };
+
   @override
   void dispose() {
     _emailController;
@@ -32,29 +43,71 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    UserProvider userProvider = Provider.of<UserProvider>(context);
 
     void signInHandle() async {
-      var email = _emailController.text, password = _passwordController.text;
+      setState(() {
+        isLoading = true;
+        validator = false;
+        validatorMessage['email'] = '';
+        validatorMessage['password'] = '';
+      });
 
-      var response = await authProvider.login(
-        email: email,
-        password: password,
-      );
+      String email = _emailController.text, password = _passwordController.text;
 
-      if (response != true) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: colorDanger,
-            content: Text(response),
-          ),
-        );
-
-        return;
+      if (email.isEmpty) {
+        setState(() {
+          validator = true;
+          validatorMessage['email'] = 'E-mail tidak boleh kosong';
+          isLoading = false;
+        });
+      } else if (!Validation.emailValidate(email)) {
+        setState(() {
+          validator = true;
+          validatorMessage['email'] = 'E-mail tidak valid';
+          isLoading = false;
+        });
       }
 
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => PageSwitcher()),
-      );
+      if (password.isEmpty) {
+        setState(() {
+          validator = true;
+          validatorMessage['password'] = 'Password tidak boleh kosong';
+          isLoading = false;
+        });
+      } else if (!Validation.passwordLength(password)) {
+        setState(() {
+          validator = true;
+          validatorMessage['password'] = 'Password harus lebih dari 8 karakter';
+          isLoading = false;
+        });
+      }
+
+      if (!validator) {
+        var response = await authProvider.login(email, password);
+
+        if (response['code'] == 200) {
+          var data = response['data'];
+          UserModel user = UserModel.fromJson(data['user']);
+          user.token = "Bearer ${data['token']}";
+          userProvider.user = user;
+          SecureStorageService.setToken(user.token.toString());
+
+          setState(() {
+            isLoading = false;
+          });
+
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => PageSwitcher()),
+          );
+        } else {
+          Toast.showError(context, response['message']);
+
+          setState(() {
+            isLoading = false;
+          });
+        }
+      }
     }
 
     Widget header() {
@@ -66,7 +119,8 @@ class _LoginPageState extends State<LoginPage> {
             height: 273,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/cat_login.gif'),
+                image: AssetImage('assets/images/login.png'),
+                fit: BoxFit.contain,
               ),
             ),
           ),
@@ -82,6 +136,7 @@ class _LoginPageState extends State<LoginPage> {
             style: subtitleTextStyle.copyWith(
               fontSize: 16,
             ),
+            textAlign: TextAlign.center,
           ),
         ],
       );
@@ -151,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
         alignment: Alignment.center,
         child: TextButton(
           onPressed: () {
-            Navigator.of(context).pushNamed('/register');
+            Navigator.of(context).pushNamed(RegisterPage.route);
           },
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -189,8 +244,26 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             header(),
             emailInput(),
+            validator && validatorMessage['email'] != ''
+                ? Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text(
+                      validatorMessage['email'],
+                      style: primaryTextStyle.copyWith(color: colorDanger),
+                    ),
+                  )
+                : Container(),
             passwordInput(),
-            signInButton(),
+            validator && validatorMessage['password'] != ''
+                ? Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text(
+                      validatorMessage['password'],
+                      style: primaryTextStyle.copyWith(color: colorDanger),
+                    ),
+                  )
+                : Container(),
+            isLoading ? LoadingButton() : signInButton(),
           ],
         ),
       ),

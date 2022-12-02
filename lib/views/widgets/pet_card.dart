@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:pedo/constant/themes.dart';
 
 class PetCard extends StatelessWidget {
-  late String image, title, description;
+  final String image, title, description;
 
-  PetCard({
+  const PetCard({
     super.key,
     required this.title,
     required this.description,
@@ -15,29 +15,26 @@ class PetCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.4,
       padding: const EdgeInsets.symmetric(
         horizontal: 9,
         vertical: 10,
       ),
       decoration: BoxDecoration(
-        color: colorLight,
+        color: colorDark,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 120,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
-              image: DecorationImage(
-                image: AssetImage(image),
-                fit: BoxFit.cover,
-              ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: Image.asset(
+              image,
+              width: 129,
+              height: 120,
+              fit: BoxFit.cover,
             ),
           ),
-          const SizedBox(height: 4),
           Text(
             title,
             overflow: TextOverflow.ellipsis,
@@ -55,7 +52,7 @@ class PetCard extends StatelessWidget {
               fontSize: 10,
               fontWeight: regular,
             ),
-          ),
+          )
         ],
       ),
     );

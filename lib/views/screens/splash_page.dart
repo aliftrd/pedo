@@ -2,14 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:pedo/constant/themes.dart';
+import 'package:pedo/core/models/user_model.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
-import 'package:pedo/views/screens/home_page.dart';
+import 'package:pedo/core/providers/user_provider.dart';
+import 'package:pedo/utils/secure_storage_service.dart';
 import 'package:pedo/views/screens/login_page.dart';
 import 'package:pedo/views/screens/page_switcher.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashPage extends StatefulWidget {
+  const SplashPage({super.key});
+
   @override
   _SplashPageState createState() => _SplashPageState();
 }
@@ -22,27 +25,30 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> autoLogin() async {
-    AuthProvider authProvider = context.read<AuthProvider>();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    AuthProvider authProvider =
+        Provider.of<AuthProvider>(context, listen: false);
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
 
-    if (!prefs.containsKey("authToken")) {
+    if (!await SecureStorageService.hasToken()) {
       Timer(Duration(seconds: 3),
           () => Navigator.pushReplacementNamed(context, LoginPage.route));
       return;
     }
 
-    var token = prefs.getString("authToken");
-    var response = await authProvider.loginWithToken(token: token.toString());
+    var response = await authProvider.loginWithToken();
+    if (response['code'] == 200) {
+      var data = response['data'];
+      UserModel user = UserModel.fromJson(data['user']);
+      user.token = "Bearer ${data['token']}";
+      userProvider.user = user;
 
-    if (response != true) {
-      prefs.remove("authToken");
+      SecureStorageService.setToken(user.token.toString());
+      Navigator.pushReplacementNamed(context, PageSwitcher.route);
+    } else {
+      SecureStorageService.removeToken();
       Navigator.pushReplacementNamed(context, LoginPage.route);
-      return;
     }
-
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => PageSwitcher()),
-    );
   }
 
   @override

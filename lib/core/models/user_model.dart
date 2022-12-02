@@ -1,6 +1,5 @@
 class UserModel {
-  String? name, email, image, level, token;
-  int? created_at, updated_at;
+  String? name, email, image, level, token, createdAt, updatedAt;
 
   UserModel(
     this.name,
@@ -8,8 +7,8 @@ class UserModel {
     this.image,
     this.level,
     this.token,
-    this.created_at,
-    this.updated_at,
+    this.createdAt,
+    this.updatedAt,
   );
 
   // User model from json
@@ -19,8 +18,8 @@ class UserModel {
     image = json['image'];
     level = json['level'];
     token = json['token'];
-    created_at = json['created_at'];
-    updated_at = json['updated_at'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
   }
 
   Map<String, dynamic> toJson() {
@@ -30,8 +29,8 @@ class UserModel {
       'image': image,
       'level': level,
       'token': token,
-      'created_at': created_at,
-      'updated_at': updated_at,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
     };
   }
 }

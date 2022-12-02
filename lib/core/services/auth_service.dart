@@ -1,14 +1,10 @@
 import 'dart:convert';
-
-import 'package:pedo/constant/app_url.dart';
-import 'package:http/http.dart' as http;
+import 'package:pedo/constant/api_path.dart';
+import 'package:http/http.dart';
 
 class AuthService {
-  static Future login({
-    required String email,
-    required String password,
-  }) async {
-    var uri = Uri.parse(AppUrl.login);
+  static Future login(String email, String password) async {
+    var uri = Uri.https(BASE_URL, '/api/login.php');
     var headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -18,49 +14,43 @@ class AuthService {
       'password': password,
     });
 
-    try {
-      var response = await http.post(
-        uri,
-        headers: headers,
-        body: body,
-      );
+    Response response = await post(uri, headers: headers, body: body);
 
-      return response;
-    } catch (e) {
-      print(e.toString());
-      return null;
+    switch (response.statusCode) {
+      case 200:
+        return jsonDecode(response.body);
+      case 401:
+        return jsonDecode(response.body);
+      default:
+        throw Exception('Server Error');
     }
   }
 
-  static Future loginWithToken({
-    required String token,
-  }) async {
-    var uri = Uri.parse(AppUrl.tokenVerify);
+  static Future loginWithToken(String token) async {
+    var uri = Uri.https(BASE_URL, '/api/profile.php');
     var headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': token
     };
 
-    try {
-      var response = await http.post(
-        uri,
-        headers: headers,
-      );
+    Response response = await get(
+      uri,
+      headers: headers,
+    );
 
-      return response;
-    } catch (e) {
-      print(e.toString());
-      return null;
+    switch (response.statusCode) {
+      case 200:
+        return jsonDecode(response.body);
+      case 401:
+        return jsonDecode(response.body);
+      default:
+        throw Exception('Server Error');
     }
   }
 
-  static Future register({
-    required String name,
-    required String email,
-    required String password,
-  }) async {
-    var uri = Uri.parse(AppUrl.register);
+  static Future register(String name, String email, String password) async {
+    var uri = Uri.https(BASE_URL, '/api/register.php');
     var headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -71,40 +61,42 @@ class AuthService {
       'password': password,
     });
 
-    try {
-      var response = await http.post(
-        uri,
-        headers: headers,
-        body: body,
-      );
+    Response response = await post(
+      uri,
+      headers: headers,
+      body: body,
+    );
 
-      return response;
-    } catch (e) {
-      print(e.toString());
-      return null;
+    switch (response.statusCode) {
+      case 201:
+        return jsonDecode(response.body);
+      case 409:
+        return jsonDecode(response.body);
+      default:
+        throw Exception('Server Error');
     }
   }
 
-  static Future logout({
-    required String token,
-  }) async {
-    var uri = Uri.parse(AppUrl.logout);
+  static Future logout(String token) async {
+    var uri = Uri.https(BASE_URL, '/api/logout.php');
     var headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': token
     };
 
-    try {
-      var response = await http.post(
-        uri,
-        headers: headers,
-      );
+    Response response = await post(
+      uri,
+      headers: headers,
+    );
 
-      return response;
-    } catch (e) {
-      print(e.toString());
-      return null;
+    switch (response.statusCode) {
+      case 200:
+        return jsonDecode(response.body);
+      case 401:
+        return jsonDecode(response.body);
+      default:
+        throw Exception('Server Error');
     }
   }
 }

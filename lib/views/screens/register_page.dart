@@ -2,14 +2,20 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:pedo/core/providers/auth_provider.dart';
 import 'package:pedo/core/services/auth_service.dart';
+import 'package:pedo/utils/toast.dart';
+import 'package:pedo/utils/validation.dart';
 import 'package:pedo/views/screens/login_page.dart';
 import 'package:pedo/views/widgets/loading_button.dart';
-import 'package:pedo/views/widgets/text_field_container.dart';
+import 'package:pedo/views/widgets/text_input_container.dart';
 import 'package:pedo/constant/themes.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
   static String route = '/register';
+
+  const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -20,7 +26,12 @@ class _RegisterPageState extends State<RegisterPage> {
       _emailController = TextEditingController(text: ""),
       _passwordController = TextEditingController(text: "");
 
-  bool isLoading = false;
+  bool isLoading = false, validator = false;
+  Map<String, dynamic> validatorMessage = {
+    'name': '',
+    'email': '',
+    'password': '',
+  };
 
   @override
   void dispose() {
@@ -32,51 +43,77 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
     final screenWidth = MediaQuery.of(context).size.width;
 
     void registerHandle() async {
       setState(() {
         isLoading = true;
+        validator = false;
+        validatorMessage['name'] = '';
+        validatorMessage['email'] = '';
+        validatorMessage['password'] = '';
       });
 
-      var name = _nameController.text,
+      String name = _nameController.text,
           email = _emailController.text,
           password = _passwordController.text;
 
-      Response response = await AuthService.register(
-        name: name,
-        email: email,
-        password: password,
-      );
-
-      if (response.statusCode != 201) {
-        var body = jsonDecode(response.body);
-        var errors = body['message'];
-
-        if (body['errors'] != null) {
-          var errorsList = body['errors'];
-          errors = errorsList[errorsList.keys.toList().first];
-        }
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: colorDanger,
-            content: Text(errors),
-          ),
-        );
-
+      if (name.isEmpty) {
         setState(() {
           isLoading = false;
+          validator = true;
+          validatorMessage['name'] = 'Nama tidak boleh kosong';
         });
-
-        return;
       }
 
-      setState(() {
-        isLoading = false;
-      });
+      if (email.isEmpty) {
+        setState(() {
+          isLoading = false;
+          validator = true;
+          validatorMessage['email'] = 'E-mail tidak boleh kosong';
+        });
+      } else if (!Validation.emailValidate(email)) {
+        setState(() {
+          isLoading = false;
+          validator = true;
+          validatorMessage['email'] = 'E-mail tidak valid';
+        });
+      }
 
-      Navigator.pushReplacementNamed(context, LoginPage.route);
+      if (password.isEmpty) {
+        setState(() {
+          isLoading = false;
+          validator = true;
+          validatorMessage['password'] = 'Password tidak boleh kosong';
+        });
+      } else if (!Validation.passwordLength(password)) {
+        setState(() {
+          isLoading = false;
+          validator = true;
+          validatorMessage['password'] = 'Password harus lebih dari 8 karakter';
+        });
+      }
+
+      if (!validator) {
+        var response = await authProvider.register(name, email, password);
+
+        if (response['code'] == 201) {
+          setState(() {
+            isLoading = false;
+          });
+
+          Toast.showSuccess(context, response['message']);
+
+          Navigator.pushReplacementNamed(context, LoginPage.route);
+        } else {
+          Toast.showError(context, response['message']);
+
+          setState(() {
+            isLoading = false;
+          });
+        }
+      }
     }
 
     Widget header() {
@@ -89,7 +126,7 @@ class _RegisterPageState extends State<RegisterPage> {
             height: 225,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/cat_register.gif'),
+                image: AssetImage('assets/images/register.png'),
               ),
             ),
           ),
@@ -237,8 +274,35 @@ class _RegisterPageState extends State<RegisterPage> {
           children: [
             header(),
             nameInput(),
+            validator && validatorMessage['name'] != ''
+                ? Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text(
+                      validatorMessage['name'],
+                      style: primaryTextStyle.copyWith(color: colorDanger),
+                    ),
+                  )
+                : Container(),
             emailInput(),
+            validator && validatorMessage['email'] != ''
+                ? Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text(
+                      validatorMessage['email'],
+                      style: primaryTextStyle.copyWith(color: colorDanger),
+                    ),
+                  )
+                : Container(),
             passwordInput(),
+            validator && validatorMessage['password'] != ''
+                ? Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text(
+                      validatorMessage['password'],
+                      style: primaryTextStyle.copyWith(color: colorDanger),
+                    ),
+                  )
+                : Container(),
             isLoading ? LoadingButton() : signUpButton(),
           ],
         ),

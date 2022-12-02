@@ -1,12 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pedo/constant/themes.dart';
-import 'package:pedo/core/providers/auth_provider.dart';
 import 'package:pedo/views/screens/home_page.dart';
 import 'package:pedo/views/screens/more_page.dart';
-import 'package:provider/provider.dart';
 
 class PageSwitcher extends StatefulWidget {
+  static String route = '/page-switcher';
+
+  const PageSwitcher({super.key});
+
   @override
   State<PageSwitcher> createState() => _PageSwitcherState();
 }
@@ -25,6 +26,41 @@ class _PageSwitcherState extends State<PageSwitcher> {
     Widget body() {
       return [
         HomePage(),
+        Scaffold(
+          body: SafeArea(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 273,
+                    height: 273,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/maintenance.png'),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    "Halaman Sedang",
+                    style: primaryTextStyle.copyWith(
+                      fontSize: 20,
+                      fontWeight: medium,
+                    ),
+                  ),
+                  Text(
+                    "Dalam Perbaikan",
+                    style: primaryTextStyle.copyWith(
+                      fontSize: 20,
+                      fontWeight: medium,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
         MorePage(),
       ][_currentIndex];
     }
@@ -32,6 +68,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
     return Scaffold(
       body: body(),
       bottomNavigationBar: BottomNavigationBar(
+        elevation: 0,
         currentIndex: _currentIndex,
         onTap: _onItemTapped,
         unselectedLabelStyle: primaryTextStyle.copyWith(
@@ -44,23 +81,34 @@ class _PageSwitcherState extends State<PageSwitcher> {
         items: [
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/images/icon/home.png',
+              'assets/icons/home.png',
               width: 24,
             ),
             label: 'Home',
             activeIcon: Image.asset(
-              'assets/images/icon/home-active.png',
+              'assets/icons/home-active.png',
               width: 24,
             ),
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/images/icon/more.png',
+              'assets/icons/pets.png',
+              width: 24,
+            ),
+            label: 'My Pets',
+            activeIcon: Image.asset(
+              'assets/icons/pets-active.png',
+              width: 24,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Image.asset(
+              'assets/icons/more.png',
               width: 24,
             ),
             label: 'More',
             activeIcon: Image.asset(
-              'assets/images/icon/more-active.png',
+              'assets/icons/more-active.png',
               width: 24,
             ),
           ),
