@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
-import 'package:pedo/core/providers/user_provider.dart';
 import 'package:pedo/views/screens/login_page.dart';
+import 'package:pedo/views/screens/profile_page.dart';
 import 'package:provider/provider.dart';
 
 class MorePage extends StatelessWidget {
@@ -13,27 +13,103 @@ class MorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
-    UserProvider userProvider = Provider.of<UserProvider>(context);
 
-    void signOutHandle() {}
-    // TODO: implement build
     return Scaffold(
+      backgroundColor: background,
       body: SafeArea(
-        child: Container(
-          width: double.infinity,
-          height: 200,
-          child: TextButton.icon(
-            icon: Icon(Icons.logout, color: colorPrimary),
-            label: Text(
-              "Keluar",
-              style: primaryTextStyle.copyWith(color: colorPrimary),
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              elevation: 0,
+              backgroundColor: background,
+              leading: Padding(
+                padding: EdgeInsets.only(left: defaultMargin),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: colorDark,
+                  ),
+                ),
+              ),
             ),
-            onPressed: () async {
-              authProvider.logout();
-              userProvider.user = null;
-              Navigator.pushReplacementNamed(context, LoginPage.route);
-            },
-          ),
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, ProfilePage.route);
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: defaultMargin,
+                        vertical: 15,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(100),
+                                child: authProvider.getUser?.image != null
+                                    ? Image.network(
+                                        authProvider.getUser!.image,
+                                        width: 40,
+                                        height: 40,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : const Text('No Image'),
+                              ),
+                              const SizedBox(width: 20),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("${authProvider.getUser?.name}"),
+                                  Text("${authProvider.getUser?.email}"),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Icon(Icons.edit, color: colorDark),
+                        ],
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: defaultMargin,
+                        vertical: 15,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.logout, color: colorDark),
+                          const SizedBox(width: 15),
+                          Expanded(
+                            child: Text(
+                              'Keluar',
+                              style: primaryTextStyle.copyWith(
+                                color: colorDark,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onTap: () async {
+                      authProvider.logout();
+
+                      Navigator.pop(context);
+                      Navigator.pushReplacementNamed(context, LoginPage.route);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
