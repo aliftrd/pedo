@@ -15,6 +15,7 @@ Color colorHint = const Color(0xFFA3A6B9);
 
 Color background = const Color(0xFFF1F1F1);
 Color backgroundInput = const Color(0xFFFFF7EC);
+Color disableBackgroundInput = const Color(0xFFDEDAD3);
 
 // Typography
 TextStyle primaryTextStyle = TextStyle(
