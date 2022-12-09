@@ -39,6 +39,7 @@ dependencies:
   shared_preferences: ^2.0.15
   intl: ^0.17.0
   flutter_html: ^2.2.1
+  carousel_slider: ^3.0.0
 
 dev_dependencies:
   flutter_test:

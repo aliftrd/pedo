@@ -1,4 +1,6 @@
 import 'package:pedo/views/screens/article/article_page.dart';
+import 'package:pedo/views/screens/pet_list/pet_detail.dart';
+import 'package:pedo/views/screens/pet_list/pet_list.dart';
 import 'package:pedo/views/screens/profile_page.dart';
 import 'package:pedo/views/screens/article/article_detail_page.dart';
 import 'package:pedo/views/screens/home_page.dart';
@@ -17,4 +19,6 @@ dynamic routes = {
   ProfilePage.route: (context) => ProfilePage(),
   MorePage.route: (context) => MorePage(),
   ArticlePage.route: (context) => ArticlePage(),
+  petList.route: (context) => petList(),
+  petDetail.route: (context) => petDetail(),
 };
