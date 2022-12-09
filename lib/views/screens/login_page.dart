@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pedo/core/models/user_model.dart';
+import 'package:pedo/core/providers/article_provider.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
-import 'package:pedo/core/providers/user_provider.dart';
-import 'package:pedo/utils/secure_storage_service.dart';
 import 'package:pedo/utils/toast.dart';
 import 'package:pedo/utils/validation.dart';
 import 'package:pedo/views/screens/page_switcher.dart';
@@ -43,7 +41,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
-    UserProvider userProvider = Provider.of<UserProvider>(context);
 
     void signInHandle() async {
       setState(() {
@@ -87,12 +84,6 @@ class _LoginPageState extends State<LoginPage> {
         var response = await authProvider.login(email, password);
 
         if (response['code'] == 200) {
-          var data = response['data'];
-          UserModel user = UserModel.fromJson(data['user']);
-          user.token = "Bearer ${data['token']}";
-          userProvider.user = user;
-          SecureStorageService.setToken(user.token.toString());
-
           setState(() {
             isLoading = false;
           });

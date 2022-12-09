@@ -16,17 +16,19 @@ class _ArticlePageState extends State<ArticlePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    ArticleProvider articleProvider =
+        Provider.of<ArticleProvider>(context, listen: false);
+
     _scrollController.addListener(() {
-      ArticlePageProvider provider =
-          Provider.of<ArticlePageProvider>(context, listen: false);
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        if (!provider.isLastPage) {
-          provider.getArticles();
+        if (!articleProvider.isLastPage) {
+          articleProvider.getArticles(isHome: false);
         }
       }
     });
+    articleProvider.getArticles();
+
     super.initState();
   }
 
@@ -39,14 +41,16 @@ class _ArticlePageState extends State<ArticlePage> {
 
   @override
   Widget build(BuildContext context) {
-    ArticlePageProvider articleProvider =
-        Provider.of<ArticlePageProvider>(context);
+    ArticleProvider articleProvider = Provider.of<ArticleProvider>(context);
 
     return Scaffold(
       backgroundColor: background,
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: () => articleProvider.getArticles(isRefresh: true),
+          onRefresh: () => articleProvider.getArticles(
+            isHome: false,
+            isRefresh: true,
+          ),
           child: CustomScrollView(
             controller: _scrollController,
             physics: const BouncingScrollPhysics(),
@@ -66,7 +70,10 @@ class _ArticlePageState extends State<ArticlePage> {
                 leading: Padding(
                   padding: EdgeInsets.only(left: defaultMargin),
                   child: IconButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      articleProvider.getArticles();
+                    },
                     icon: Icon(
                       Icons.arrow_back,
                       color: colorDark,
@@ -94,28 +101,32 @@ class _ArticlePageState extends State<ArticlePage> {
                   itemCount: !articleProvider.isLastPage
                       ? articleProvider.articles.length + 1
                       : articleProvider.articles.length,
-                  itemBuilder: (context, index) =>
-                      (index < articleProvider.articles.length)
-                          ? Container(
-                              height: 200,
-                              margin: EdgeInsets.only(
-                                  left: defaultMargin,
-                                  right: defaultMargin,
-                                  bottom: index ==
-                                          articleProvider.articles.length - 1
+                  itemBuilder: (context, index) => (index <
+                          articleProvider.articles.length)
+                      ? Container(
+                          height: 200,
+                          margin: EdgeInsets.only(
+                              left: defaultMargin,
+                              right: defaultMargin,
+                              bottom:
+                                  index == articleProvider.articles.length - 1
                                       ? 20
                                       : 0),
-                              child: ArticleCard(
-                                article: articleProvider.articles[index],
-                              ),
-                            )
-                          : Container(
+                          child: ArticleCard(
+                            article: articleProvider.articles[index],
+                          ),
+                        )
+                      : articleProvider.articles.isNotEmpty
+                          ? Container(
                               margin: EdgeInsets.only(bottom: defaultMargin),
                               child: Center(
                                 child: CircularProgressIndicator(
                                   color: colorPrimary,
                                 ),
                               ),
+                            )
+                          : const Center(
+                              child: Text('data kosong'),
                             ),
                 ),
               ),

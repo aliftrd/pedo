@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/views/screens/home_page.dart';
-import 'package:pedo/views/screens/more_page.dart';
 
 class PageSwitcher extends StatefulWidget {
   static String route = '/page-switcher';
@@ -61,7 +60,6 @@ class _PageSwitcherState extends State<PageSwitcher> {
             ),
           ),
         ),
-        MorePage(),
       ][_currentIndex];
     }
 
@@ -98,17 +96,6 @@ class _PageSwitcherState extends State<PageSwitcher> {
             label: 'My Pets',
             activeIcon: Image.asset(
               'assets/icons/pets-active.png',
-              width: 24,
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset(
-              'assets/icons/more.png',
-              width: 24,
-            ),
-            label: 'More',
-            activeIcon: Image.asset(
-              'assets/icons/more-active.png',
               width: 24,
             ),
           ),

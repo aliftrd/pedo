@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
-import 'package:pedo/core/services/auth_service.dart';
 import 'package:pedo/utils/toast.dart';
 import 'package:pedo/utils/validation.dart';
 import 'package:pedo/views/screens/login_page.dart';
@@ -26,7 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
       _emailController = TextEditingController(text: ""),
       _passwordController = TextEditingController(text: "");
 
-  bool isLoading = false, validator = false;
+  bool validator = false;
   Map<String, dynamic> validatorMessage = {
     'name': '',
     'email': '',
@@ -48,7 +47,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
     void registerHandle() async {
       setState(() {
-        isLoading = true;
         validator = false;
         validatorMessage['name'] = '';
         validatorMessage['email'] = '';
@@ -61,7 +59,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
       if (name.isEmpty) {
         setState(() {
-          isLoading = false;
           validator = true;
           validatorMessage['name'] = 'Nama tidak boleh kosong';
         });
@@ -69,13 +66,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
       if (email.isEmpty) {
         setState(() {
-          isLoading = false;
           validator = true;
           validatorMessage['email'] = 'E-mail tidak boleh kosong';
         });
       } else if (!Validation.emailValidate(email)) {
         setState(() {
-          isLoading = false;
           validator = true;
           validatorMessage['email'] = 'E-mail tidak valid';
         });
@@ -83,13 +78,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
       if (password.isEmpty) {
         setState(() {
-          isLoading = false;
           validator = true;
           validatorMessage['password'] = 'Password tidak boleh kosong';
         });
       } else if (!Validation.passwordLength(password)) {
         setState(() {
-          isLoading = false;
           validator = true;
           validatorMessage['password'] = 'Password harus lebih dari 8 karakter';
         });
@@ -99,19 +92,11 @@ class _RegisterPageState extends State<RegisterPage> {
         var response = await authProvider.register(name, email, password);
 
         if (response['code'] == 201) {
-          setState(() {
-            isLoading = false;
-          });
-
           Toast.showSuccess(context, response['message']);
 
-          Navigator.pushReplacementNamed(context, LoginPage.route);
+          Navigator.pop(context);
         } else {
           Toast.showError(context, response['message']);
-
-          setState(() {
-            isLoading = false;
-          });
         }
       }
     }
@@ -303,7 +288,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   )
                 : Container(),
-            isLoading ? LoadingButton() : signUpButton(),
+            authProvider.isLoading ? LoadingButton() : signUpButton(),
           ],
         ),
       ),

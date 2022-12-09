@@ -1,13 +1,24 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pedo/constant/routes.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/providers/article_provider.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
-import 'package:pedo/core/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 void main() {
+  HttpOverrides.global = new MyHttpOverrides();
   runApp(const MyApp());
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
@@ -31,9 +42,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
-        ChangeNotifierProvider(create: (context) => UserProvider()),
-        ChangeNotifierProvider(create: (context) => ArticleHomeProvider()),
-        ChangeNotifierProvider(create: (context) => ArticlePageProvider()),
+        ChangeNotifierProvider(create: (context) => ArticleProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
