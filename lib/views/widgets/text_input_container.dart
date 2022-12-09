@@ -8,9 +8,11 @@ class TextInputContainer extends StatelessWidget {
     required this.textFormField,
     required this.icons,
     this.margin,
+    this.backgroundInputColor,
   }) : super(key: key);
 
   final EdgeInsets? margin;
+  final Color? backgroundInputColor;
   final TextFormField textFormField;
   final Icon icons;
   final String label;
@@ -33,7 +35,7 @@ class TextInputContainer extends StatelessWidget {
             height: 50,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              color: backgroundInput,
+              color: backgroundInputColor ?? backgroundInput,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Center(
