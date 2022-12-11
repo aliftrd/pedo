@@ -261,7 +261,7 @@ class _RegisterPageState extends State<RegisterPage> {
             nameInput(),
             validator && validatorMessage['name'] != ''
                 ? Padding(
-                    padding: EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.only(top: 10),
                     child: Text(
                       validatorMessage['name'],
                       style: primaryTextStyle.copyWith(color: colorDanger),
@@ -271,7 +271,7 @@ class _RegisterPageState extends State<RegisterPage> {
             emailInput(),
             validator && validatorMessage['email'] != ''
                 ? Padding(
-                    padding: EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.only(top: 10),
                     child: Text(
                       validatorMessage['email'],
                       style: primaryTextStyle.copyWith(color: colorDanger),
@@ -281,7 +281,7 @@ class _RegisterPageState extends State<RegisterPage> {
             passwordInput(),
             validator && validatorMessage['password'] != ''
                 ? Padding(
-                    padding: EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.only(top: 10),
                     child: Text(
                       validatorMessage['password'],
                       style: primaryTextStyle.copyWith(color: colorDanger),
