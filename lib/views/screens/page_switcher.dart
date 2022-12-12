@@ -55,7 +55,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
               '$iconsPath/home.png',
               width: 24,
             ),
-            label: 'Home',
+            label: 'Beranda',
             activeIcon: Image.asset(
               '$iconsPath/home-active.png',
               width: 24,
@@ -66,7 +66,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
               '$iconsPath/pets.png',
               width: 24,
             ),
-            label: 'My Pets',
+            label: 'Kemitraan',
             activeIcon: Image.asset(
               '$iconsPath/pets-active.png',
               width: 24,

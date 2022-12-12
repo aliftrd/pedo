@@ -153,7 +153,7 @@ class HomePage extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Hello,',
+                                  'Halo,',
                                   style: subtitleTextStyle.copyWith(
                                     fontWeight: semibold,
                                     fontSize: 14,
