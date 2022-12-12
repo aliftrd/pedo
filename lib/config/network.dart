@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:pedo/utils/secure_storage_service.dart';
 
@@ -26,6 +27,7 @@ class Network {
       String parameter = keys.join('&').toString();
       sendUrl = "$sendUrl?$parameter";
     }
+
     Map<String, String> sendHeader = {};
     if (header != null) {
       for (final mapEntry in header.entries) {
@@ -49,11 +51,22 @@ class Network {
 
   Future post({
     required String url,
+    Map<String, String>? params,
     Map<String, String>? header,
     Map<String, dynamic>? body,
     bool useToken = true,
   }) async {
     String sendUrl = baseUrl + url;
+    List<String> keys = [];
+    if (params != null) {
+      for (var mapEntry in params.entries) {
+        final key = mapEntry.key, value = mapEntry.value;
+        keys.add("$key=$value");
+      }
+      String parameter = keys.join('&').toString();
+      sendUrl = "$sendUrl?$parameter";
+    }
+
     Map<String, String> sendHeader = {};
     if (header != null) {
       for (final mapEntry in header.entries) {
@@ -76,6 +89,7 @@ class Network {
       body: sendBody,
     );
 
+    debugPrint(response.body);
     return jsonDecode(response.body);
   }
 }
