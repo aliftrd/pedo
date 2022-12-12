@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pedo/constant/routes.dart';
 import 'package:pedo/constant/themes.dart';
+import 'package:pedo/core/controller/image_controller.dart';
 import 'package:pedo/core/providers/article_provider.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => ArticleProvider()),
+        ChangeNotifierProvider(create: (context) => ImageController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

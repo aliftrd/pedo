@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:pedo/constant/themes.dart';
-import 'package:pedo/core/models/user_model.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
 import 'package:pedo/utils/secure_storage_service.dart';
 import 'package:pedo/views/screens/login_page.dart';
@@ -10,6 +9,7 @@ import 'package:pedo/views/screens/page_switcher.dart';
 import 'package:provider/provider.dart';
 
 class SplashPage extends StatefulWidget {
+  static String route = '/';
   const SplashPage({super.key});
 
   @override
@@ -19,8 +19,8 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
-    super.initState();
     autoLogin();
+    super.initState();
   }
 
   Future<void> autoLogin() async {
@@ -28,7 +28,7 @@ class _SplashPageState extends State<SplashPage> {
         Provider.of<AuthProvider>(context, listen: false);
 
     if (!await SecureStorageService.hasToken()) {
-      Timer(Duration(seconds: 3),
+      Timer(const Duration(seconds: 3),
           () => Navigator.pushReplacementNamed(context, LoginPage.route));
       return;
     }

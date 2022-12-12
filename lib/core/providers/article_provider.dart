@@ -7,12 +7,36 @@ class ArticleProvider extends ChangeNotifier {
   int currentPage = 1;
   List<ArticleModel> _articles = [];
   List<ArticleModel> get articles => _articles;
+  ArticleModel findById(articleId) =>
+      _articles.firstWhere((article) => article.id == articleId);
+
+  ArticleProvider() {
+    getArticles();
+  }
+
+  ScrollController onScrollEvent() {
+    final ScrollController scrollController = ScrollController();
+
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+          scrollController.position.maxScrollExtent) {
+        if (!isLastPage) {
+          getArticles(isHome: false);
+        }
+      }
+    });
+
+    return scrollController;
+  }
 
   Future<void> getArticles({
     bool isHome = true,
     bool isRefresh = false,
   }) async {
     try {
+      isLoading = true;
+      notifyListeners();
+
       if (isHome) {
         currentPage = 1;
         isLastPage = false;

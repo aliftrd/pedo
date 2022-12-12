@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart';
 import 'package:pedo/config/endpoint.dart';
 import 'package:pedo/core/models/user_model.dart';
 import 'package:pedo/utils/secure_storage_service.dart';
@@ -10,10 +15,10 @@ class AuthProvider with ChangeNotifier {
 
   // Login
   Future login(String email, String password) async {
-    isLoading = true;
-    notifyListeners();
-
     try {
+      isLoading = true;
+      notifyListeners();
+
       var response = await Endpoint.urlLogin(
         body: {
           'email': email,
@@ -26,12 +31,31 @@ class AuthProvider with ChangeNotifier {
         setUser = UserModel.fromJson(response['data']['user'])
           ..token = response['data']['token'];
         isLoading = false;
-
         notifyListeners();
+
         return response;
       } else {
+        isLoading = false;
+        notifyListeners();
+
         return response;
       }
+    } catch (err) {
+      debugPrint(err.toString());
+    }
+  }
+
+  // Register
+  Future register(String name, String email, String password) async {
+    try {
+      Map<String, dynamic> body = {
+        'name': name,
+        'email': email,
+        'password': password,
+      };
+      var response = await Endpoint.urlRegister(body);
+
+      return response;
     } catch (err) {
       debugPrint(err.toString());
     }
@@ -45,9 +69,8 @@ class AuthProvider with ChangeNotifier {
 
       if (response['code'] == 200) {
         setUser = UserModel.fromJson(response['data']['user'])..token = token;
-        isLoading = false;
-
         notifyListeners();
+
         return response;
       } else {
         SecureStorageService.removeToken();
@@ -58,19 +81,44 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-// Register
-  Future register(String name, String email, String password) async {
+  Future updateProfile({
+    required String name,
+    required String? image,
+    required String passwordConfirmation,
+  }) async {
     try {
+      isLoading = true;
+      notifyListeners();
+
+      String? base64image;
+      if (image != null) {
+        File file = File(image);
+        Uint8List fileInBytes = file.readAsBytesSync();
+        base64image = base64Encode(fileInBytes);
+      }
+
       Map<String, dynamic> body = {
         'name': name,
-        'email': email,
-        'password': password,
+        'image': base64image,
+        'confirm_password': passwordConfirmation,
       };
-      var response = await Endpoint.urlRegister(body);
 
-      return response;
-    } catch (err) {
-      debugPrint(err.toString());
+      var response = await Endpoint.urlUpdateProfile(body);
+
+      if (response['code'] == 200) {
+        setUser = UserModel.fromJson(response['data']);
+        isLoading = false;
+        notifyListeners();
+
+        return response;
+      } else {
+        isLoading = false;
+        notifyListeners();
+
+        return response;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 

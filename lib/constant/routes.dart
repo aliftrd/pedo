@@ -21,4 +21,13 @@ dynamic routes = {
   ArticlePage.route: (context) => ArticlePage(),
   petList.route: (context) => petList(),
   petDetail.route: (context) => petDetail(),
+  SplashPage.route: (context) => const SplashPage(),
+  LoginPage.route: (context) => const LoginPage(),
+  RegisterPage.route: (context) => const RegisterPage(),
+  PageSwitcher.route: (context) => const PageSwitcher(),
+  HomePage.route: (context) => const HomePage(),
+  ProfilePage.route: (context) => const ProfilePage(),
+  MorePage.route: (context) => const MorePage(),
+  ArticlePage.route: (context) => const ArticlePage(),
+  ArticleDetailPage.route: (context) => const ArticleDetailPage(),
 };

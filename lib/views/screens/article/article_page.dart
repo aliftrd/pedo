@@ -2,46 +2,52 @@ import 'package:flutter/material.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/providers/article_provider.dart';
 import 'package:pedo/views/widgets/article_card.dart';
+import 'package:pedo/views/widgets/errors.dart';
 import 'package:provider/provider.dart';
 
-class ArticlePage extends StatefulWidget {
+class ArticlePage extends StatelessWidget {
   static String route = '/articles';
 
-  @override
-  State<ArticlePage> createState() => _ArticlePageState();
-}
-
-class _ArticlePageState extends State<ArticlePage> {
-  ScrollController _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    ArticleProvider articleProvider =
-        Provider.of<ArticleProvider>(context, listen: false);
-
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        if (!articleProvider.isLastPage) {
-          articleProvider.getArticles(isHome: false);
-        }
-      }
-    });
-    articleProvider.getArticles();
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    _scrollController.dispose();
-    super.dispose();
-  }
+  const ArticlePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     ArticleProvider articleProvider = Provider.of<ArticleProvider>(context);
+
+    Widget buildArticleCard() {
+      return SliverToBoxAdapter(
+        child: ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          separatorBuilder: (context, _) => const SizedBox(height: 15),
+          itemCount: !articleProvider.isLastPage
+              ? articleProvider.articles.length + 1
+              : articleProvider.articles.length,
+          itemBuilder: (context, index) =>
+              (index < articleProvider.articles.length)
+                  ? Container(
+                      height: 200,
+                      margin: EdgeInsets.only(
+                          left: defaultMargin,
+                          right: defaultMargin,
+                          bottom: index == articleProvider.articles.length - 1
+                              ? 20
+                              : 0),
+                      child: ArticleCard(
+                        articleId: articleProvider.articles[index].id,
+                      ),
+                    )
+                  : Container(
+                      margin: EdgeInsets.only(bottom: defaultMargin),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: colorPrimary,
+                        ),
+                      ),
+                    ),
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: background,
@@ -52,8 +58,10 @@ class _ArticlePageState extends State<ArticlePage> {
             isRefresh: true,
           ),
           child: CustomScrollView(
-            controller: _scrollController,
-            physics: const BouncingScrollPhysics(),
+            controller: articleProvider.onScrollEvent(),
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            ),
             slivers: [
               SliverAppBar(
                 floating: true,
@@ -93,43 +101,19 @@ class _ArticlePageState extends State<ArticlePage> {
                   ),
                 ],
               ),
-              SliverToBoxAdapter(
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  separatorBuilder: (context, _) => const SizedBox(height: 15),
-                  itemCount: !articleProvider.isLastPage
-                      ? articleProvider.articles.length + 1
-                      : articleProvider.articles.length,
-                  itemBuilder: (context, index) => (index <
-                          articleProvider.articles.length)
-                      ? Container(
-                          height: 200,
-                          margin: EdgeInsets.only(
-                              left: defaultMargin,
-                              right: defaultMargin,
-                              bottom:
-                                  index == articleProvider.articles.length - 1
-                                      ? 20
-                                      : 0),
-                          child: ArticleCard(
-                            article: articleProvider.articles[index],
-                          ),
+              articleProvider.isLoading && articleProvider.articles.isEmpty
+                  ? SliverFillRemaining(
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: colorPrimary,
+                        ),
+                      ),
+                    )
+                  : articleProvider.articles.isEmpty
+                      ? SliverFillRemaining(
+                          child: Errors.noDataFound(),
                         )
-                      : articleProvider.articles.isNotEmpty
-                          ? Container(
-                              margin: EdgeInsets.only(bottom: defaultMargin),
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  color: colorPrimary,
-                                ),
-                              ),
-                            )
-                          : const Center(
-                              child: Text('data kosong'),
-                            ),
-                ),
-              ),
+                      : buildArticleCard()
             ],
           ),
         ),

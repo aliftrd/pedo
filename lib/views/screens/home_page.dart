@@ -1,35 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:pedo/constant/assets_path.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/providers/article_provider.dart';
-import 'package:pedo/core/providers/auth_provider.dart';
 import 'package:pedo/views/screens/article/article_page.dart';
 import 'package:pedo/views/screens/pet_list/pet_list.dart';
 import 'package:pedo/views/screens/more_page.dart';
 import 'package:pedo/views/widgets/article_card.dart';
 import 'package:pedo/views/widgets/badge.dart';
+import 'package:pedo/views/widgets/custom_appbar.dart';
 import 'package:provider/provider.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   static String route = '/home';
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    loadData();
-    super.initState();
-  }
-
-  Future<void> loadData() {
-    return Provider.of<ArticleProvider>(context, listen: false).getArticles();
-  }
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    AuthProvider authProvider = Provider.of<AuthProvider>(context);
     ArticleProvider articleProvider = Provider.of<ArticleProvider>(context);
 
     Widget articleHeader() {
@@ -47,9 +34,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             InkWell(
-              onTap: () {
-                Navigator.pushNamed(context, ArticlePage.route);
-              },
+              onTap: () => Navigator.pushNamed(context, ArticlePage.route),
               child: Badge(
                 text: 'Lihat Semua',
                 borderColor: colorSubtitle,
@@ -62,25 +47,26 @@ class _HomePageState extends State<HomePage> {
     }
 
     Widget articleItem() {
-      return Container(
+      return SizedBox(
         height: 200,
         child: articleProvider.isLoading
-            ? const Center(
-                child: Text('Loading...'),
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: colorPrimary,
+                ),
               )
-            : articleProvider.articles.length < 1
+            : articleProvider.articles.isEmpty
                 ? Center(
                     child: Text('Tidak ada artikel', style: subtitleTextStyle),
                   )
                 : ListView.separated(
-                    // shrinkWrap: true,
                     physics: const BouncingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
                     separatorBuilder: (context, _) => const SizedBox(width: 10),
                     itemCount: articleProvider.articles.length,
                     itemBuilder: (context, index) {
                       return ArticleCard(
-                        article: articleProvider.articles[index],
+                        articleId: articleProvider.articles[index].id,
                         margin: EdgeInsets.only(
                           left: index == 0 ? defaultMargin : 0,
                           right: index == articleProvider.articles.length - 1
@@ -126,75 +112,13 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: background,
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: () => loadData(),
+          onRefresh: () => articleProvider.getArticles(),
           child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            ),
             slivers: [
-              SliverAppBar(
-                toolbarHeight: 60,
-                backgroundColor: background,
-                floating: true,
-                elevation: 0,
-                title: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: defaultMargin),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          MorePage.route,
-                        ),
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: authProvider.getUser?.image != null
-                                  ? Image.network(
-                                      authProvider.getUser!.image,
-                                      width: 40,
-                                      height: 40,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : const Text('No Image'),
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Hello,',
-                                  style: subtitleTextStyle.copyWith(
-                                    fontWeight: semibold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                Text(
-                                  "${authProvider.getUser?.name} 👋",
-                                  style: primaryTextStyle.copyWith(
-                                    fontWeight: semibold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.notifications,
-                          color: colorSubtitle,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                leading: null,
-              ),
+              CustomAppBar(),
               SliverToBoxAdapter(
                 child: ListView(
                   physics: const NeverScrollableScrollPhysics(),
@@ -216,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                           childAspectRatio: 3 / 4.35,
                           mainAxisSpacing: 20,
                         ),
-                        itemCount: 9,
+                        itemCount: 8,
                         itemBuilder: (BuildContext ctx, index) {
                           return Container(
                             decoration: BoxDecoration(
@@ -233,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(6),
                                   child: Image.asset(
-                                    'assets/images/kucing.png',
+                                    '$imagesPath/kucing.png',
                                     width: 129,
                                     height: 129,
                                     fit: BoxFit.cover,

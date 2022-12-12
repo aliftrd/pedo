@@ -33,6 +33,13 @@ class Endpoint {
     );
   }
 
+  static urlUpdateProfile(Map<String, dynamic> body) async {
+    return Network().post(
+      url: 'profile.php',
+      body: body,
+    );
+  }
+
   static urlArticle({
     String? page,
   }) async {

@@ -2,25 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/models/article_model.dart';
+import 'package:pedo/core/providers/article_provider.dart';
 import 'package:pedo/views/screens/article/article_detail_page.dart';
+import 'package:provider/provider.dart';
 
 class ArticleCard extends StatelessWidget {
-  final ArticleModel article;
+  final int articleId;
   final EdgeInsetsGeometry? margin;
 
   ArticleCard({
     super.key,
-    required this.article,
+    required this.articleId,
     this.margin,
   });
 
   @override
   Widget build(BuildContext context) {
+    ArticleModel article =
+        Provider.of<ArticleProvider>(context).findById(articleId);
+
     return InkWell(
-      onTap: () =>
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return ArticleDetailPage(article);
-      })),
+      onTap: () {
+        Navigator.of(context)
+            .pushNamed(ArticleDetailPage.route, arguments: articleId);
+      },
       child: Container(
         width: 315,
         margin: margin,
@@ -49,18 +54,22 @@ class ArticleCard extends StatelessWidget {
             ),
             Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.access_time,
                   size: 16,
+                  color: colorSubtitle,
                 ),
                 const SizedBox(
                   width: 5,
                 ),
-                Text(DateFormat('MMM dd, yyyy').format(article.createdAt)),
+                Text(
+                  DateFormat('MMM dd, yyyy').format(article.createdAt),
+                  style: subtitleTextStyle,
+                ),
               ],
             ),
             Text(
-              '${article.id} . ${article.title}',
+              article.title,
               overflow: TextOverflow.ellipsis,
               style: primaryTextStyle.copyWith(
                 fontSize: 16,
