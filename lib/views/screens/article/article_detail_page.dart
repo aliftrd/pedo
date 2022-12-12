@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:pedo/constant/themes.dart';
-import 'package:pedo/core/models/article_model.dart';
+import 'package:pedo/core/providers/article_provider.dart';
 import 'package:pedo/views/widgets/badge.dart';
 import 'package:pedo/views/widgets/html_viewer.dart';
+import 'package:provider/provider.dart';
 
 class ArticleDetailPage extends StatelessWidget {
-  final ArticleModel articleDetail;
-  ArticleDetailPage(this.articleDetail);
+  static String route = '/article-detail';
+
+  const ArticleDetailPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final articleId = ModalRoute.of(context)?.settings.arguments;
+    final articleDetail =
+        Provider.of<ArticleProvider>(context).findById(articleId);
+
     Widget article() {
       int categoryIndex = -1;
       return Column(

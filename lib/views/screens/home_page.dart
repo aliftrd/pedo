@@ -8,23 +8,10 @@ import 'package:pedo/views/widgets/article_card.dart';
 import 'package:pedo/views/widgets/badge.dart';
 import 'package:provider/provider.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   static String route = '/home';
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  @override
-  void initState() {
-    loadData();
-    super.initState();
-  }
-
-  Future<void> loadData() {
-    return Provider.of<ArticleProvider>(context, listen: false).getArticles();
-  }
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +33,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             InkWell(
-              onTap: () {
-                Navigator.pushNamed(context, ArticlePage.route);
-              },
+              onTap: () => Navigator.pushNamed(context, ArticlePage.route),
               child: Badge(
                 text: 'Lihat Semua',
                 borderColor: colorSubtitle,
@@ -61,25 +46,26 @@ class _HomePageState extends State<HomePage> {
     }
 
     Widget articleItem() {
-      return Container(
+      return SizedBox(
         height: 200,
         child: articleProvider.isLoading
-            ? const Center(
-                child: Text('Loading...'),
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: colorPrimary,
+                ),
               )
-            : articleProvider.articles.length < 1
+            : articleProvider.articles.isEmpty
                 ? Center(
                     child: Text('Tidak ada artikel', style: subtitleTextStyle),
                   )
                 : ListView.separated(
-                    // shrinkWrap: true,
                     physics: const BouncingScrollPhysics(),
                     scrollDirection: Axis.horizontal,
                     separatorBuilder: (context, _) => const SizedBox(width: 10),
                     itemCount: articleProvider.articles.length,
                     itemBuilder: (context, index) {
                       return ArticleCard(
-                        article: articleProvider.articles[index],
+                        articleId: articleProvider.articles[index].id,
                         margin: EdgeInsets.only(
                           left: index == 0 ? defaultMargin : 0,
                           right: index == articleProvider.articles.length - 1
@@ -125,9 +111,11 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: background,
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: () => loadData(),
+          onRefresh: () => articleProvider.getArticles(),
           child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            ),
             slivers: [
               SliverAppBar(
                 toolbarHeight: 60,
@@ -171,7 +159,9 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 Text(
-                                  "${authProvider.getUser?.name} 👋",
+                                  "${authProvider.getUser!.name.split(RegExp(r'\s+'))[0]} 👋",
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
                                   style: primaryTextStyle.copyWith(
                                     fontWeight: semibold,
                                     fontSize: 16,
@@ -215,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                           childAspectRatio: 3 / 4.35,
                           mainAxisSpacing: 20,
                         ),
-                        itemCount: 9,
+                        itemCount: 8,
                         itemBuilder: (BuildContext ctx, index) {
                           return Container(
                             decoration: BoxDecoration(

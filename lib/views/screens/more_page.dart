@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
+import 'package:pedo/utils/ensure.dart';
 import 'package:pedo/views/screens/login_page.dart';
 import 'package:pedo/views/screens/profile_page.dart';
 import 'package:provider/provider.dart';
@@ -54,21 +55,20 @@ class MorePage extends StatelessWidget {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(100),
-                                child: authProvider.getUser?.image != null
-                                    ? Image.network(
-                                        authProvider.getUser!.image,
-                                        width: 40,
-                                        height: 40,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : const Text('No Image'),
+                                child: Image.network(
+                                  authProvider.getUser!.image,
+                                  width: 40,
+                                  height: 40,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                               const SizedBox(width: 20),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("${authProvider.getUser?.name}"),
-                                  Text("${authProvider.getUser?.email}"),
+                                  Text(EnsureSafe.safeEmail(
+                                      authProvider.getUser!.email)),
                                 ],
                               ),
                             ],

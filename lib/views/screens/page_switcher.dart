@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/views/screens/home_page.dart';
+import 'package:pedo/views/widgets/errors.dart';
 
 class PageSwitcher extends StatefulWidget {
   static String route = '/page-switcher';
@@ -27,37 +28,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
         HomePage(),
         Scaffold(
           body: SafeArea(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 273,
-                    height: 273,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/images/maintenance.png'),
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    "Halaman Sedang",
-                    style: primaryTextStyle.copyWith(
-                      fontSize: 20,
-                      fontWeight: medium,
-                    ),
-                  ),
-                  Text(
-                    "Dalam Perbaikan",
-                    style: primaryTextStyle.copyWith(
-                      fontSize: 20,
-                      fontWeight: medium,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: Errors.maintenance(),
           ),
         ),
       ][_currentIndex];
@@ -66,7 +37,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
     return Scaffold(
       body: body(),
       bottomNavigationBar: BottomNavigationBar(
-        elevation: 0,
+        elevation: 1,
         currentIndex: _currentIndex,
         onTap: _onItemTapped,
         unselectedLabelStyle: primaryTextStyle.copyWith(
@@ -76,6 +47,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
           fontSize: 10,
         ),
         selectedItemColor: colorDark,
+        backgroundColor: colorLight,
         items: [
           BottomNavigationBarItem(
             icon: Image.asset(
