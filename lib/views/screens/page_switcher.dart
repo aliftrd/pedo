@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pedo/constant/assets_path.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/views/screens/home_page.dart';
 import 'package:pedo/views/widgets/errors.dart';
@@ -51,23 +52,23 @@ class _PageSwitcherState extends State<PageSwitcher> {
         items: [
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/icons/home.png',
+              '$iconsPath/home.png',
               width: 24,
             ),
             label: 'Home',
             activeIcon: Image.asset(
-              'assets/icons/home-active.png',
+              '$iconsPath/home-active.png',
               width: 24,
             ),
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
-              'assets/icons/pets.png',
+              '$iconsPath/pets.png',
               width: 24,
             ),
             label: 'My Pets',
             activeIcon: Image.asset(
-              'assets/icons/pets-active.png',
+              '$iconsPath/pets-active.png',
               width: 24,
             ),
           ),

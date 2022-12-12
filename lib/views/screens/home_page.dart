@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pedo/constant/assets_path.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/providers/article_provider.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
@@ -222,7 +223,7 @@ class HomePage extends StatelessWidget {
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(6),
                                   child: Image.asset(
-                                    'assets/images/kucing.png',
+                                    '$imagesPath/kucing.png',
                                     width: 129,
                                     height: 129,
                                     fit: BoxFit.cover,
