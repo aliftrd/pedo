@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pedo/constant/themes.dart';
+import 'package:pedo/views/screens/page_switcher.dart';
 import 'package:pedo/views/widgets/button.dart';
 
 class PartnerThankyou extends StatelessWidget {
@@ -64,6 +65,9 @@ class PartnerThankyou extends StatelessWidget {
                 text: 'Kembali Ke Beranda',
                 onPressed: () {
                   Navigator.pop(context);
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => PageSwitcher()),
+                  );
                 },
               ),
             ],

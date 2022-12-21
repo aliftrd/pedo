@@ -11,6 +11,7 @@ import 'package:pedo/core/models/village_model.dart';
 import 'package:pedo/core/providers/partner_register_provider.dart';
 import 'package:pedo/utils/toast.dart';
 import 'package:pedo/utils/validation.dart';
+import 'package:pedo/views/screens/partner_thankyou.dart';
 import 'package:pedo/views/widgets/button.dart';
 import 'package:pedo/views/widgets/input_container.dart';
 import 'package:pedo/views/widgets/loading_button.dart';
@@ -133,15 +134,16 @@ class _PartnerRegisterPageState extends State<PartnerRegisterPage> {
           imageThree: imageThree!,
         );
 
-        // if (response['code'] == 200) {
-        //   Navigator.pop(context);
-        // } else {
-        //   Toast.showError(context, response['message'][0]);
+        if (response['code'] == 201) {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, PartnerThankyou.route);
+        } else {
+          Toast.showError(context, response['message']);
 
-        setState(() {
-          isLoading = false;
-        });
-        // }
+          setState(() {
+            isLoading = false;
+          });
+        }
       }
     }
 
