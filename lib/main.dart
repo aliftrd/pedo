@@ -7,6 +7,7 @@ import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/controller/image_controller.dart';
 import 'package:pedo/core/providers/article_provider.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
+import 'package:pedo/core/providers/partner_register_provider.dart';
 import 'package:provider/provider.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -42,8 +43,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        // =========================== Provider =========================== //
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => ArticleProvider()),
+        ChangeNotifierProvider(create: (context) => PartnerRegisterProvider()),
+        // =========================== Controller =========================== //
         ChangeNotifierProvider(create: (context) => ImageController()),
       ],
       child: MaterialApp(

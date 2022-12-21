@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart';
 import 'package:pedo/config/endpoint.dart';
 import 'package:pedo/core/models/user_model.dart';
 import 'package:pedo/utils/secure_storage_service.dart';
@@ -83,23 +81,16 @@ class AuthProvider with ChangeNotifier {
 
   Future updateProfile({
     required String name,
-    required String? image,
+    required File? image,
     required String passwordConfirmation,
   }) async {
     try {
       isLoading = true;
       notifyListeners();
 
-      String? base64image;
-      if (image != null) {
-        File file = File(image);
-        Uint8List fileInBytes = file.readAsBytesSync();
-        base64image = base64Encode(fileInBytes);
-      }
-
       Map<String, dynamic> body = {
         'name': name,
-        'image': base64image,
+        'image': image != null ? base64Encode(image.readAsBytesSync()) : null,
         'confirm_password': passwordConfirmation,
       };
 

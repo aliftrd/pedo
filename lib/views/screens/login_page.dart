@@ -5,7 +5,7 @@ import 'package:pedo/utils/validation.dart';
 import 'package:pedo/views/screens/page_switcher.dart';
 import 'package:pedo/views/screens/register_page.dart';
 import 'package:pedo/views/widgets/loading_button.dart';
-import 'package:pedo/views/widgets/text_input_container.dart';
+import 'package:pedo/views/widgets/input_container.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:provider/provider.dart';
 
@@ -133,10 +133,10 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     Widget emailInput() {
-      return TextInputContainer(
+      return InputContainer(
         icons: Icon(Icons.email, color: colorPrimary),
         label: "E-mail",
-        textFormField: TextFormField(
+        widget: TextFormField(
           controller: _emailController,
           style: primaryTextStyle,
           decoration: InputDecoration.collapsed(
@@ -148,11 +148,11 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     Widget passwordInput() {
-      return TextInputContainer(
+      return InputContainer(
         margin: const EdgeInsets.only(top: 15),
         icons: Icon(Icons.lock, color: colorPrimary),
         label: "Password",
-        textFormField: TextFormField(
+        widget: TextFormField(
           controller: _passwordController,
           style: primaryTextStyle,
           obscureText: true,

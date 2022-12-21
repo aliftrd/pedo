@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:pedo/constant/themes.dart';
 
-class TextInputContainer extends StatelessWidget {
-  const TextInputContainer({
+class InputContainer extends StatelessWidget {
+  const InputContainer({
     Key? key,
-    required this.label,
-    required this.textFormField,
-    required this.icons,
+    required this.widget,
+    this.label,
+    this.icons,
     this.margin,
     this.backgroundInputColor,
   }) : super(key: key);
 
   final EdgeInsets? margin;
   final Color? backgroundInputColor;
-  final TextFormField textFormField;
-  final Icon icons;
-  final String label;
+  final Widget widget;
+  final Icon? icons;
+  final String? label;
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +24,11 @@ class TextInputContainer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: primaryTextStyle.copyWith(fontSize: 16),
-          ),
+          if (label != null)
+            Text(
+              label!,
+              style: primaryTextStyle.copyWith(fontSize: 16),
+            ),
           const SizedBox(
             height: 5,
           ),
@@ -41,12 +42,10 @@ class TextInputContainer extends StatelessWidget {
             child: Center(
               child: Row(
                 children: [
-                  icons,
-                  const SizedBox(
-                    width: 16,
-                  ),
+                  icons != null ? icons! : const SizedBox(),
+                  icons != null ? const SizedBox(width: 16) : const SizedBox(),
                   Expanded(
-                    child: textFormField,
+                    child: widget,
                   ),
                 ],
               ),

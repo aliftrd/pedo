@@ -1,10 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/controller/image_controller.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
 import 'package:pedo/utils/ensure.dart';
 import 'package:pedo/views/widgets/loading_button.dart';
-import 'package:pedo/views/widgets/text_input_container.dart';
+import 'package:pedo/views/widgets/input_container.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -19,6 +21,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _nameController = TextEditingController(),
       _confirmPasswordController = TextEditingController();
+  File? profile;
   bool isLoading = false, validator = false;
   Map<String, dynamic> validatorMessage = {
     'confirm_password': '',
@@ -56,9 +59,7 @@ class _ProfilePageState extends State<ProfilePage> {
       if (!validator) {
         var response = await authProvider.updateProfile(
           name: _nameController.text,
-          image: imageController.pickedImage != null
-              ? imageController.pickedImage!.path
-              : null,
+          image: profile,
           passwordConfirmation: _confirmPasswordController.text,
         );
 
@@ -118,9 +119,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(100),
-                              child: (imageController.pickedImage != null)
+                              child: (profile != null)
                                   ? Image.file(
-                                      imageController.takeImage(),
+                                      profile!,
                                       height: 125,
                                       width: 125,
                                       fit: BoxFit.cover,
@@ -138,6 +139,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: InkWell(
                                 onTap: () async {
                                   await imageController.pickImage();
+                                  if (imageController.pickedImage != null) {
+                                    setState(() {
+                                      profile = imageController.takeImage();
+                                    });
+                                  }
                                 },
                                 child: Container(
                                   height: 32,
@@ -163,10 +169,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ]),
                     ),
-                    TextInputContainer(
+                    InputContainer(
                       icons: Icon(Icons.email, color: colorPrimary),
                       label: "Nama",
-                      textFormField: TextFormField(
+                      widget: TextFormField(
                         controller: _nameController
                           ..text = _nameController.text != ''
                               ? _nameController.text
@@ -178,11 +184,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     ),
-                    TextInputContainer(
+                    InputContainer(
                       icons: Icon(Icons.email, color: colorPrimary),
                       backgroundInputColor: disableBackgroundInput,
                       label: "E-mail",
-                      textFormField: TextFormField(
+                      widget: TextFormField(
                         enabled: false,
                         initialValue: EnsureSafe.safeEmail(
                           authProvider.getUser!.email,
@@ -194,10 +200,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     ),
-                    TextInputContainer(
+                    InputContainer(
                       icons: Icon(Icons.email, color: colorPrimary),
                       label: "Konfirmasi Password",
-                      textFormField: TextFormField(
+                      widget: TextFormField(
                         obscureText: true,
                         style: primaryTextStyle,
                         controller: _confirmPasswordController,

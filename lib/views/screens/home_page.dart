@@ -3,7 +3,7 @@ import 'package:pedo/constant/assets_path.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/providers/article_provider.dart';
 import 'package:pedo/views/screens/article/article_page.dart';
-import 'package:pedo/views/screens/pet_list/pet_list.dart';
+import 'package:pedo/views/screens/pet/pet_list.dart';
 import 'package:pedo/views/screens/more_page.dart';
 import 'package:pedo/views/widgets/article_card.dart';
 import 'package:pedo/views/widgets/article_skeleton_card.dart';
@@ -101,7 +101,7 @@ class HomePage extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                Navigator.pushNamed(context, petList.route);
+                Navigator.pushNamed(context, PetList.route);
               },
               child: Badge(
                 text: 'Lihat Semua',

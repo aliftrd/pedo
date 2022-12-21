@@ -50,4 +50,50 @@ class Endpoint {
       },
     );
   }
+
+  static urlProvince() async {
+    return Network().get(
+      url: 'province.php',
+    );
+  }
+
+  static urlCity(String provinceId) async {
+    return Network().get(
+      url: 'city.php',
+      params: {
+        'province_id': provinceId,
+      },
+    );
+  }
+
+  static urlDistrict(String cityId) async {
+    return Network().get(
+      url: 'district.php',
+      params: {
+        'city_id': cityId,
+      },
+    );
+  }
+
+  static urlVillage(String districtId) async {
+    return Network().get(
+      url: 'village.php',
+      params: {
+        'district_id': districtId,
+      },
+    );
+  }
+
+  static urlRequestPending() async {
+    return Network().get(
+      url: 'upgrade.php',
+    );
+  }
+
+  static urlUpgradeUser(Map<String, dynamic> body) async {
+    return Network().post(
+      url: 'upgrade.php',
+      body: body,
+    );
+  }
 }

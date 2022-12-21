@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pedo/constant/themes.dart';
 
 class ImageController extends ChangeNotifier {
   ImagePicker imagePicker = ImagePicker();
@@ -25,7 +26,18 @@ class ImageController extends ChangeNotifier {
       sourcePath: imageFile!.path,
       maxWidth: 1080,
       maxHeight: 1080,
-      aspectRatio: CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
+      aspectRatio: const CropAspectRatio(ratioX: 1.0, ratioY: 1.0),
+      uiSettings: [
+        AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: colorPrimary,
+            toolbarWidgetColor: colorLight,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+      ],
     );
     if (croppedImage == null) return null;
     return XFile(croppedImage.path);

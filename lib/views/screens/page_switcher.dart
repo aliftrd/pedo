@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pedo/constant/assets_path.dart';
 import 'package:pedo/constant/themes.dart';
+import 'package:pedo/core/providers/auth_provider.dart';
 import 'package:pedo/views/screens/home_page.dart';
-import 'package:pedo/views/widgets/errors.dart';
+import 'package:pedo/views/screens/partner_page.dart';
+import 'package:pedo/views/screens/partnership_register.dart';
+import 'package:provider/provider.dart';
 
 class PageSwitcher extends StatefulWidget {
   static String route = '/page-switcher';
@@ -24,14 +27,14 @@ class _PageSwitcherState extends State<PageSwitcher> {
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
     Widget body() {
       return [
         HomePage(),
-        Scaffold(
-          body: SafeArea(
-            child: Errors.maintenance(),
-          ),
-        ),
+        authProvider.getUser!.level.toLowerCase() == 'petfinder'
+            ? const PartnershipRegister()
+            : PartnerPage(),
       ][_currentIndex];
     }
 

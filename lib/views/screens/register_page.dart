@@ -3,7 +3,7 @@ import 'package:pedo/core/providers/auth_provider.dart';
 import 'package:pedo/utils/toast.dart';
 import 'package:pedo/utils/validation.dart';
 import 'package:pedo/views/widgets/loading_button.dart';
-import 'package:pedo/views/widgets/text_input_container.dart';
+import 'package:pedo/views/widgets/input_container.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:provider/provider.dart';
 
@@ -136,10 +136,10 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     Widget nameInput() {
-      return TextInputContainer(
+      return InputContainer(
         icons: Icon(Icons.person, color: colorPrimary),
         label: "Nama",
-        textFormField: TextFormField(
+        widget: TextFormField(
           controller: _nameController,
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -157,11 +157,11 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     Widget emailInput() {
-      return TextInputContainer(
+      return InputContainer(
         margin: const EdgeInsets.only(top: 15),
         icons: Icon(Icons.email, color: colorPrimary),
         label: "E-mail",
-        textFormField: TextFormField(
+        widget: TextFormField(
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
           style: primaryTextStyle,
@@ -174,11 +174,11 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     Widget passwordInput() {
-      return TextInputContainer(
+      return InputContainer(
         margin: const EdgeInsets.only(top: 15),
         icons: Icon(Icons.lock, color: colorPrimary),
         label: "Password",
-        textFormField: TextFormField(
+        widget: TextFormField(
           controller: _passwordController,
           keyboardType: TextInputType.visiblePassword,
           obscureText: true,

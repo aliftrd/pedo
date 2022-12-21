@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/providers/article_provider.dart';
 import 'package:pedo/views/widgets/article_card.dart';
+import 'package:pedo/views/widgets/article_skeleton_card.dart';
 import 'package:pedo/views/widgets/errors.dart';
 import 'package:provider/provider.dart';
 
@@ -102,11 +103,13 @@ class ArticlePage extends StatelessWidget {
                 ],
               ),
               articleProvider.isLoading && articleProvider.articles.isEmpty
-                  ? SliverFillRemaining(
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: colorPrimary,
-                        ),
+                  ? SliverToBoxAdapter(
+                      child: Column(
+                        children: [
+                          ArticleSkeletonCard(),
+                          ArticleSkeletonCard(),
+                          ArticleSkeletonCard(),
+                        ],
                       ),
                     )
                   : articleProvider.articles.isEmpty

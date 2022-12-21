@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pedo/constant/themes.dart';
-import 'package:pedo/constant/assets_path.dart';
-import 'package:pedo/views/screens/pet_list/pet_detail.dart';
-import 'package:pedo/views/widgets/badge.dart';
+import 'package:pedo/views/screens/pet/pet_detail.dart';
 
-class petList extends StatefulWidget {
-  const petList({super.key});
+class PetList extends StatefulWidget {
+  const PetList({super.key});
   static String route = '/petList';
 
   @override
-  State<petList> createState() => _petListState();
+  State<PetList> createState() => _PetListState();
 }
 
-class _petListState extends State<petList> {
+class _PetListState extends State<PetList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,7 +73,7 @@ class _petListState extends State<petList> {
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => petDetail(),
+                          builder: (context) => PetDetail(),
                         ),
                       ),
                       child: Container(

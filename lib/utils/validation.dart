@@ -1,3 +1,5 @@
+import 'package:libphonenumber/libphonenumber.dart';
+
 class Validation {
   static emailValidate(email) {
     return RegExp(
@@ -7,5 +9,20 @@ class Validation {
 
   static passwordLength(String password) {
     return password.length >= 8;
+  }
+
+  // make sure the phone is valid
+  static phoneValidate(String phone) async {
+    try {
+      bool? isValid = await PhoneNumberUtil.isValidPhoneNumber(
+          phoneNumber: phone, isoCode: 'ID');
+      return isValid;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static isNull(params) {
+    return params == null || params == '' || params.isEmpty;
   }
 }

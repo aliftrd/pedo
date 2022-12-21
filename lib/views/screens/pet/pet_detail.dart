@@ -5,17 +5,17 @@ import 'package:pedo/constant/themes.dart';
 import 'package:pedo/constant/assets_path.dart';
 import 'package:pedo/main.dart';
 import 'package:pedo/views/widgets/badge.dart';
-import 'package:pedo/views/screens/pet_list/pet_list.dart';
+import 'package:pedo/views/screens/pet/pet_list.dart';
 
-class petDetail extends StatefulWidget {
+class PetDetail extends StatefulWidget {
   static String route = '/petDetail';
-  const petDetail({super.key});
+  const PetDetail({super.key});
 
   @override
-  State<petDetail> createState() => _petDetailState();
+  State<PetDetail> createState() => _PetDetailState();
 }
 
-class _petDetailState extends State<petDetail> {
+class _PetDetailState extends State<PetDetail> {
   List images = [
     'assets/images/kucing.png',
     'assets/images/kucing.png',

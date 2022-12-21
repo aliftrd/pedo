@@ -10,7 +10,7 @@ class ArticleCard extends StatelessWidget {
   final int articleId;
   final EdgeInsetsGeometry? margin;
 
-  ArticleCard({
+  const ArticleCard({
     super.key,
     required this.articleId,
     this.margin,
