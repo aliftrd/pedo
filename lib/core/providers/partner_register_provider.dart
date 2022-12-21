@@ -120,7 +120,7 @@ class PartnerRegisterProvider extends ChangeNotifier {
     try {
       Map<String, dynamic> body = {
         'phone': phone,
-        'village': village,
+        'village_id': village,
         'pet': base64Encode(imageOne.readAsBytesSync()),
         'pet_with_you': base64Encode(imageTwo.readAsBytesSync()),
         'pet_home': base64Encode(imageThree.readAsBytesSync()),
