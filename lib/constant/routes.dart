@@ -1,4 +1,6 @@
 import 'package:pedo/views/screens/article/article_page.dart';
+import 'package:pedo/views/screens/partner_register_page.dart';
+import 'package:pedo/views/screens/partner_thankyou.dart';
 import 'package:pedo/views/screens/profile_page.dart';
 import 'package:pedo/views/screens/article/article_detail_page.dart';
 import 'package:pedo/views/screens/home_page.dart';
@@ -18,4 +20,6 @@ dynamic routes = {
   MorePage.route: (context) => const MorePage(),
   ArticlePage.route: (context) => const ArticlePage(),
   ArticleDetailPage.route: (context) => const ArticleDetailPage(),
+  PartnerRegisterPage.route: (context) => const PartnerRegisterPage(),
+  PartnerThankyou.route: (context) => const PartnerThankyou(),
 };

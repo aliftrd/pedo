@@ -4,6 +4,7 @@ import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/providers/article_provider.dart';
 import 'package:pedo/views/screens/article/article_page.dart';
 import 'package:pedo/views/widgets/article_card.dart';
+import 'package:pedo/views/widgets/article_skeleton_card.dart';
 import 'package:pedo/views/widgets/badge.dart';
 import 'package:pedo/views/widgets/custom_appbar.dart';
 import 'package:provider/provider.dart';
@@ -48,10 +49,15 @@ class HomePage extends StatelessWidget {
       return SizedBox(
         height: 200,
         child: articleProvider.isLoading
-            ? Center(
-                child: CircularProgressIndicator(
-                  color: colorPrimary,
-                ),
+            ? ListView(
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                children: [
+                  SizedBox(width: defaultMargin),
+                  ArticleSkeletonCard(isHome: true),
+                  const SizedBox(width: 10),
+                  ArticleSkeletonCard(isHome: true),
+                ],
               )
             : articleProvider.articles.isEmpty
                 ? Center(
