@@ -1,8 +1,8 @@
 import 'package:pedo/views/screens/article/article_page.dart';
 import 'package:pedo/views/screens/partner_register_page.dart';
 import 'package:pedo/views/screens/partner_thankyou.dart';
-import 'package:pedo/views/screens/pet_list/pet_detail.dart';
-import 'package:pedo/views/screens/pet_list/pet_list.dart';
+import 'package:pedo/views/screens/pet/pet_detail.dart';
+import 'package:pedo/views/screens/pet/pet_list.dart';
 import 'package:pedo/views/screens/profile_page.dart';
 import 'package:pedo/views/screens/article/article_detail_page.dart';
 import 'package:pedo/views/screens/home_page.dart';
@@ -24,6 +24,6 @@ dynamic routes = {
   ArticleDetailPage.route: (context) => const ArticleDetailPage(),
   PartnerRegisterPage.route: (context) => const PartnerRegisterPage(),
   PartnerThankyou.route: (context) => const PartnerThankyou(),
-  PetList.route: (context) => PetList(),
-  PetDetail.route: (context) => PetDetail(),
+  PetList.route: (context) => const PetList(),
+  PetDetail.route: (context) => const PetDetail(),
 };
