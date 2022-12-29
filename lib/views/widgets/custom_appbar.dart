@@ -51,7 +51,9 @@ class CustomAppBar extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${authProvider.getUser!.name.split(RegExp(r'\s+'))[0]} 👋",
+                        authProvider.getUser?.name != null
+                            ? "${authProvider.getUser?.name.split(RegExp(r'\s+'))[0]} 👋"
+                            : 'Guest',
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         style: primaryTextStyle.copyWith(

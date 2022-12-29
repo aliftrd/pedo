@@ -5,8 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:pedo/constant/routes.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/controller/image_controller.dart';
+import 'package:pedo/core/providers/animal_provider.dart';
 import 'package:pedo/core/providers/article_provider.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
+import 'package:pedo/core/providers/partner_post_provider.dart';
+import 'package:pedo/core/providers/partner_provider.dart';
 import 'package:pedo/core/providers/partner_register_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +23,7 @@ class MyHttpOverrides extends HttpOverrides {
 }
 
 void main() {
-  HttpOverrides.global = new MyHttpOverrides();
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
@@ -46,7 +49,10 @@ class MyApp extends StatelessWidget {
         // =========================== Provider =========================== //
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => ArticleProvider()),
+        ChangeNotifierProvider(create: (context) => AnimalProvider()),
         ChangeNotifierProvider(create: (context) => PartnerRegisterProvider()),
+        ChangeNotifierProvider(create: (context) => PartnerProvider()),
+        ChangeNotifierProvider(create: (context) => PartnerPostProvider()),
         // =========================== Controller =========================== //
         ChangeNotifierProvider(create: (context) => ImageController()),
       ],

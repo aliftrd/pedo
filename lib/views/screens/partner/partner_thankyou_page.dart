@@ -3,9 +3,9 @@ import 'package:pedo/constant/themes.dart';
 import 'package:pedo/views/screens/page_switcher.dart';
 import 'package:pedo/views/widgets/button.dart';
 
-class PartnerThankyou extends StatelessWidget {
+class PartnerThankyouPage extends StatelessWidget {
   static String route = '/partner-thankyou';
-  const PartnerThankyou({Key? key}) : super(key: key);
+  const PartnerThankyouPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

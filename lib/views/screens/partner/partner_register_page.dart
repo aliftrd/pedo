@@ -11,7 +11,7 @@ import 'package:pedo/core/models/village_model.dart';
 import 'package:pedo/core/providers/partner_register_provider.dart';
 import 'package:pedo/utils/toast.dart';
 import 'package:pedo/utils/validation.dart';
-import 'package:pedo/views/screens/partner_thankyou.dart';
+import 'package:pedo/views/screens/partner/partner_thankyou_page.dart';
 import 'package:pedo/views/widgets/button.dart';
 import 'package:pedo/views/widgets/input_container.dart';
 import 'package:pedo/views/widgets/loading_button.dart';
@@ -136,7 +136,7 @@ class _PartnerRegisterPageState extends State<PartnerRegisterPage> {
 
         if (response['code'] == 201) {
           Navigator.pop(context);
-          Navigator.pushNamed(context, PartnerThankyou.route);
+          Navigator.pushNamed(context, PartnerThankyouPage.route);
         } else {
           Toast.showError(context, response['message']);
 

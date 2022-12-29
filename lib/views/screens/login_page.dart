@@ -4,6 +4,7 @@ import 'package:pedo/utils/toast.dart';
 import 'package:pedo/utils/validation.dart';
 import 'package:pedo/views/screens/page_switcher.dart';
 import 'package:pedo/views/screens/register_page.dart';
+import 'package:pedo/views/widgets/input_validation.dart';
 import 'package:pedo/views/widgets/loading_button.dart';
 import 'package:pedo/views/widgets/input_container.dart';
 import 'package:pedo/constant/themes.dart';
@@ -235,25 +236,13 @@ class _LoginPageState extends State<LoginPage> {
             header(),
             emailInput(),
             validator && validatorMessage['email'] != ''
-                ? Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: Text(
-                      validatorMessage['email'],
-                      style: primaryTextStyle.copyWith(color: colorDanger),
-                    ),
-                  )
+                ? InputValidation.error(validatorMessage['email'])
                 : Container(),
             passwordInput(),
             validator && validatorMessage['password'] != ''
-                ? Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: Text(
-                      validatorMessage['password'],
-                      style: primaryTextStyle.copyWith(color: colorDanger),
-                    ),
-                  )
+                ? InputValidation.error(validatorMessage['password'])
                 : Container(),
-            isLoading ? LoadingButton() : signInButton(),
+            isLoading ? const LoadingButton() : signInButton(),
           ],
         ),
       ),

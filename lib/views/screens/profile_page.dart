@@ -5,6 +5,7 @@ import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/controller/image_controller.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
 import 'package:pedo/utils/ensure.dart';
+import 'package:pedo/views/widgets/input_validation.dart';
 import 'package:pedo/views/widgets/loading_button.dart';
 import 'package:pedo/views/widgets/input_container.dart';
 import 'package:provider/provider.dart';
@@ -214,14 +215,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                     validator && validatorMessage['confirm_password'] != ''
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text(
-                              validatorMessage['confirm_password'],
-                              style:
-                                  primaryTextStyle.copyWith(color: colorDanger),
-                            ),
-                          )
+                        ? InputValidation.error(
+                            validatorMessage['confirm_password'])
                         : Container(),
                   ],
                 ),

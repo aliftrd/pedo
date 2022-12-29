@@ -40,6 +40,8 @@ class ImageController extends ChangeNotifier {
       ],
     );
     if (croppedImage == null) return null;
+
+    File(_pickedImage!.path).delete();
     return XFile(croppedImage.path);
   }
 

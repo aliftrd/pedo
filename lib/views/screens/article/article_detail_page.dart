@@ -16,8 +16,7 @@ class ArticleDetailPage extends StatelessWidget {
     final articleDetail =
         Provider.of<ArticleProvider>(context).findById(articleId);
 
-    Widget article() {
-      int categoryIndex = -1;
+    Widget articleBody() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -38,22 +37,19 @@ class ArticleDetailPage extends StatelessWidget {
           ),
           Row(
             children: articleDetail.categories.map((category) {
-              categoryIndex++;
               return Badge(
                 text: category.title,
                 borderColor: colorPrimary,
                 margin: EdgeInsets.only(
                   top: 10,
-                  right: categoryIndex < articleDetail.categories.length - 1
-                      ? 10
-                      : 0,
+                  right: category != articleDetail.categories.last ? 10 : 0,
                 ),
               );
             }).toList(),
           ),
           Container(
             margin: EdgeInsets.symmetric(
-              vertical: articleDetail.categories.length < 1 ? 20 : 10,
+              vertical: articleDetail.categories.isEmpty ? 20 : 10,
             ),
             child: HtmlViewer(articleDetail.description),
           ),
@@ -73,7 +69,7 @@ class ArticleDetailPage extends StatelessWidget {
               elevation: 0,
               centerTitle: true,
               title: Text(
-                'Artikel',
+                'Detail Artikel',
                 style: primaryTextStyle.copyWith(
                   fontSize: 16,
                   fontWeight: semibold,
@@ -93,7 +89,7 @@ class ArticleDetailPage extends StatelessWidget {
             SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: defaultMargin),
-                child: article(),
+                child: articleBody(),
               ),
             ),
           ],

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:pedo/constant/assets_path.dart';
 import 'package:pedo/constant/themes.dart';
+import 'package:pedo/core/providers/animal_provider.dart';
 import 'package:pedo/core/providers/article_provider.dart';
 import 'package:pedo/views/screens/article/article_page.dart';
-import 'package:pedo/views/screens/pet/pet_list.dart';
-import 'package:pedo/views/screens/more_page.dart';
+import 'package:pedo/views/screens/animal/animal_page.dart';
+import 'package:pedo/views/widgets/animal_skeleton_card.dart';
 import 'package:pedo/views/widgets/article_card.dart';
 import 'package:pedo/views/widgets/article_skeleton_card.dart';
 import 'package:pedo/views/widgets/badge.dart';
 import 'package:pedo/views/widgets/custom_appbar.dart';
+import 'package:pedo/views/widgets/animal_card.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
@@ -18,7 +21,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     ArticleProvider articleProvider = Provider.of<ArticleProvider>(context);
+    AnimalProvider animalProvider = Provider.of<AnimalProvider>(context);
 
     Widget articleHeader() {
       return Container(
@@ -35,7 +40,10 @@ class HomePage extends StatelessWidget {
               ),
             ),
             InkWell(
-              onTap: () => Navigator.pushNamed(context, ArticlePage.route),
+              onTap: () {
+                articleProvider.getArticles();
+                Navigator.pushNamed(context, ArticlePage.route);
+              },
               child: Badge(
                 text: 'Lihat Semua',
                 borderColor: colorSubtitle,
@@ -48,41 +56,41 @@ class HomePage extends StatelessWidget {
     }
 
     Widget articleItem() {
-      return SizedBox(
-        height: 200,
-        child: articleProvider.isLoading
-            ? ListView(
-                physics: const NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                children: [
-                  SizedBox(width: defaultMargin),
-                  ArticleSkeletonCard(isHome: true),
-                  const SizedBox(width: 10),
-                  ArticleSkeletonCard(isHome: true),
-                ],
-              )
-            : articleProvider.articles.isEmpty
-                ? Center(
-                    child: Text('Tidak ada artikel', style: subtitleTextStyle),
-                  )
-                : ListView.separated(
-                    physics: const BouncingScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    separatorBuilder: (context, _) => const SizedBox(width: 10),
-                    itemCount: articleProvider.articles.length,
-                    itemBuilder: (context, index) {
-                      return ArticleCard(
-                        articleId: articleProvider.articles[index].id,
-                        margin: EdgeInsets.only(
-                          left: index == 0 ? defaultMargin : 0,
-                          right: index == articleProvider.articles.length - 1
-                              ? defaultMargin
-                              : 0,
+      return !articleProvider.isLoading && articleProvider.articles.isEmpty
+          ? const Center(
+              child: Text('Belum ada artikel'),
+            )
+          : SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: articleProvider.isLoading
+                    ? List.generate(
+                        3,
+                        (index) => ArticleSkeletonCard(
+                          width: width * 2.3 / 3,
+                          margin: EdgeInsets.only(
+                            left: index == 0 ? defaultMargin : 20,
+                            right: index == 2 ? defaultMargin : 0,
+                          ),
                         ),
-                      );
-                    },
-                  ),
-      );
+                      )
+                    : articleProvider.articles.map((article) {
+                        return ArticleCard(
+                          articleId: article.id,
+                          margin: EdgeInsets.only(
+                            left: article == articleProvider.articles.first
+                                ? defaultMargin
+                                : 20,
+                            right: article == articleProvider.articles.last
+                                ? defaultMargin
+                                : 0,
+                          ),
+                        );
+                      }).toList(),
+              ),
+            );
     }
 
     Widget animalHeader() {
@@ -101,7 +109,8 @@ class HomePage extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                Navigator.pushNamed(context, PetList.route);
+                animalProvider.getAnimals();
+                Navigator.pushNamed(context, AnimalPage.route);
               },
               child: Badge(
                 text: 'Lihat Semua',
@@ -114,111 +123,75 @@ class HomePage extends StatelessWidget {
       );
     }
 
+    Widget animalItem() {
+      return !animalProvider.isLoading && animalProvider.animals.isEmpty
+          ? const Center(
+              child: Text('Belum ada hewan'),
+            )
+          : articleProvider.isLoading
+              ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: defaultMargin),
+                  child: StaggeredGrid.count(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20,
+                    children: List.generate(
+                      3,
+                      (index) => AnimalSkeletonCard(
+                        margin: index.bitLength == 2
+                            ? EdgeInsets.only(bottom: defaultMargin)
+                            : null,
+                      ),
+                    ),
+                  ),
+                )
+              : Container(
+                  padding: EdgeInsets.symmetric(horizontal: defaultMargin),
+                  child: StaggeredGrid.count(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20,
+                    children: List.generate(
+                      animalProvider.animals.length,
+                      (index) => AnimalCard(
+                        animalId: animalProvider.animals[index].id,
+                        margin: animalProvider.animals[index] ==
+                                animalProvider.animals.last
+                            ? EdgeInsets.only(bottom: defaultMargin)
+                            : null,
+                      ),
+                    ),
+                  ),
+                );
+    }
+
     return Scaffold(
       backgroundColor: background,
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: () => articleProvider.getArticles(),
+          onRefresh: () {
+            articleProvider.getArticles();
+            animalProvider.getAnimals();
+            return Future.delayed(const Duration(seconds: 1));
+          },
           child: CustomScrollView(
+            controller: animalProvider.onScrollEvent(),
             physics: const AlwaysScrollableScrollPhysics(
               parent: BouncingScrollPhysics(),
             ),
             slivers: [
               CustomAppBar(),
               SliverToBoxAdapter(
-                child: ListView(
+                child: SingleChildScrollView(
                   physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  children: [
-                    articleHeader(),
-                    articleItem(),
-                    animalHeader(),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: defaultMargin),
-                      margin: const EdgeInsets.only(bottom: 20),
-                      child: GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 250,
-                          crossAxisSpacing: 20,
-                          childAspectRatio: 3 / 4.35,
-                          mainAxisSpacing: 20,
-                        ),
-                        itemCount: 8,
-                        itemBuilder: (BuildContext ctx, index) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: colorLight,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 9,
-                              vertical: 10,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(6),
-                                  child: Image.asset(
-                                    '$imagesPath/kucing.png',
-                                    width: 129,
-                                    height: 129,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  'Kucing Kampung Turunan Persia dasdasddasdas',
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: subtitleTextStyle.copyWith(
-                                    fontSize: 12,
-                                    fontWeight: medium,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  'Rp 350.000',
-                                  maxLines: 1,
-                                  style: primaryTextStyle.copyWith(
-                                    fontWeight: semibold,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.location_on,
-                                      size: 14,
-                                      color: colorSubtitle,
-                                    ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      'Jember',
-                                      style: subtitleTextStyle.copyWith(
-                                        fontSize: 11,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
+                  child: Column(
+                    children: [
+                      articleHeader(),
+                      articleItem(),
+                      animalHeader(),
+                      animalItem(),
+                    ],
+                  ),
                 ),
               ),
             ],

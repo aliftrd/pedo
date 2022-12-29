@@ -40,13 +40,12 @@ class ArticleCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: Image.network(
-                  article.thumbnail,
-                  fit: BoxFit.cover,
-                ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: Image.network(
+                article.thumbnail,
+                height: 125,
+                fit: BoxFit.cover,
               ),
             ),
             const SizedBox(
@@ -56,7 +55,7 @@ class ArticleCard extends StatelessWidget {
               children: [
                 Icon(
                   Icons.access_time,
-                  size: 16,
+                  size: 18,
                   color: colorSubtitle,
                 ),
                 const SizedBox(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
 import 'package:pedo/utils/toast.dart';
 import 'package:pedo/utils/validation.dart';
+import 'package:pedo/views/widgets/input_validation.dart';
 import 'package:pedo/views/widgets/loading_button.dart';
 import 'package:pedo/views/widgets/input_container.dart';
 import 'package:pedo/constant/themes.dart';
@@ -262,33 +263,15 @@ class _RegisterPageState extends State<RegisterPage> {
             header(),
             nameInput(),
             validator && validatorMessage['name'] != ''
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Text(
-                      validatorMessage['name'],
-                      style: primaryTextStyle.copyWith(color: colorDanger),
-                    ),
-                  )
+                ? InputValidation.error(validatorMessage['name'])
                 : Container(),
             emailInput(),
             validator && validatorMessage['email'] != ''
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Text(
-                      validatorMessage['email'],
-                      style: primaryTextStyle.copyWith(color: colorDanger),
-                    ),
-                  )
+                ? InputValidation.error(validatorMessage['email'])
                 : Container(),
             passwordInput(),
             validator && validatorMessage['password'] != ''
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Text(
-                      validatorMessage['password'],
-                      style: primaryTextStyle.copyWith(color: colorDanger),
-                    ),
-                  )
+                ? InputValidation.error(validatorMessage['password'])
                 : Container(),
             isLoading ? LoadingButton() : signUpButton(),
           ],

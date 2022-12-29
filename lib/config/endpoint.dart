@@ -51,6 +51,26 @@ class Endpoint {
     );
   }
 
+  static urlAnimal({
+    String? page,
+  }) async {
+    return Network().get(
+      url: 'animals.php',
+      params: {
+        'page': page.toString(),
+      },
+    );
+  }
+
+  static urlAnimalDetail(String animalId) async {
+    return Network().get(
+      url: 'animals.php',
+      params: {
+        'animal_id': animalId,
+      },
+    );
+  }
+
   static urlProvince() async {
     return Network().get(
       url: 'province.php',
@@ -93,6 +113,40 @@ class Endpoint {
   static urlUpgradeUser(Map<String, dynamic> body) async {
     return Network().post(
       url: 'upgrade.php',
+      body: body,
+    );
+  }
+
+  static urlPartner({String? page, String? status}) async {
+    return Network().get(
+      url: 'partners.php',
+      params: {
+        'page': page.toString(),
+        'status': status.toString(),
+      },
+    );
+  }
+
+  static urlAnimalType() async {
+    return Network().get(
+      url: 'animals/type.php',
+    );
+  }
+
+  static urlAnimalBreed(String animalTypeId) async {
+    return Network().get(
+      url: 'animals/breed.php',
+      params: {
+        'animal_type_id': animalTypeId,
+      },
+    );
+  }
+
+  static urlAnimalAdd(
+    Map<String, dynamic> body,
+  ) async {
+    return Network().post(
+      url: 'partners.php',
       body: body,
     );
   }

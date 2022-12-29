@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:pedo/constant/assets_path.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/providers/partner_register_provider.dart';
-import 'package:pedo/views/screens/partner_register_page.dart';
-import 'package:pedo/views/screens/partner_thankyou.dart';
+import 'package:pedo/views/screens/partner/partner_register_page.dart';
+import 'package:pedo/views/screens/partner/partner_thankyou_page.dart';
 import 'package:pedo/views/widgets/button.dart';
 
-class PartnershipRegister extends StatelessWidget {
+class PartnerHelloPage extends StatelessWidget {
   static String route = '/partnership-register';
-  const PartnershipRegister({super.key});
+  const PartnerHelloPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +60,8 @@ class PartnershipRegister extends StatelessWidget {
                           Navigator.pushNamed(
                               context, PartnerRegisterPage.route);
                         } else {
-                          Navigator.pushNamed(context, PartnerThankyou.route);
+                          Navigator.pushNamed(
+                              context, PartnerThankyouPage.route);
                         }
                       },
                     ),

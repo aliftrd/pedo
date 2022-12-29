@@ -55,20 +55,26 @@ class MorePage extends StatelessWidget {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(100),
-                                child: Image.network(
-                                  authProvider.getUser!.image,
-                                  width: 40,
-                                  height: 40,
-                                  fit: BoxFit.cover,
-                                ),
+                                child: authProvider.getUser?.image != null
+                                    ? Image.network(
+                                        authProvider.getUser!.image,
+                                        width: 40,
+                                        height: 40,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : const Text('No Image'),
                               ),
                               const SizedBox(width: 20),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text("${authProvider.getUser?.name}"),
-                                  Text(EnsureSafe.safeEmail(
-                                      authProvider.getUser!.email)),
+                                  Text(authProvider.getUser?.name != null
+                                      ? authProvider.getUser!.name
+                                      : 'Guest'),
+                                  Text(authProvider.getUser?.email != null
+                                      ? EnsureSafe.safeEmail(
+                                          authProvider.getUser!.email)
+                                      : 'Guest'),
                                 ],
                               ),
                             ],

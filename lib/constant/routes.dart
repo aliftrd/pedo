@@ -1,8 +1,9 @@
 import 'package:pedo/views/screens/article/article_page.dart';
-import 'package:pedo/views/screens/partner_register_page.dart';
-import 'package:pedo/views/screens/partner_thankyou.dart';
-import 'package:pedo/views/screens/pet/pet_detail.dart';
-import 'package:pedo/views/screens/pet/pet_list.dart';
+import 'package:pedo/views/screens/partner/partner_post_page.dart';
+import 'package:pedo/views/screens/partner/partner_register_page.dart';
+import 'package:pedo/views/screens/partner/partner_thankyou_page.dart';
+import 'package:pedo/views/screens/animal/animal_detail_page.dart';
+import 'package:pedo/views/screens/animal/animal_page.dart';
 import 'package:pedo/views/screens/profile_page.dart';
 import 'package:pedo/views/screens/article/article_detail_page.dart';
 import 'package:pedo/views/screens/home_page.dart';
@@ -23,7 +24,7 @@ dynamic routes = {
   ArticlePage.route: (context) => const ArticlePage(),
   ArticleDetailPage.route: (context) => const ArticleDetailPage(),
   PartnerRegisterPage.route: (context) => const PartnerRegisterPage(),
-  PartnerThankyou.route: (context) => const PartnerThankyou(),
-  PetList.route: (context) => const PetList(),
-  PetDetail.route: (context) => const PetDetail(),
+  PartnerThankyouPage.route: (context) => const PartnerThankyouPage(),
+  PartnerPostPage.route: (context) => const PartnerPostPage(),
+  AnimalPage.route: (context) => const AnimalPage(),
 };

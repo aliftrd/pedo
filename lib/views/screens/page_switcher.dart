@@ -3,8 +3,8 @@ import 'package:pedo/constant/assets_path.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
 import 'package:pedo/views/screens/home_page.dart';
-import 'package:pedo/views/screens/partner_page.dart';
-import 'package:pedo/views/screens/partnership_register.dart';
+import 'package:pedo/views/screens/partner/partner_page.dart';
+import 'package:pedo/views/screens/partner/partner_hello_page.dart';
 import 'package:provider/provider.dart';
 
 class PageSwitcher extends StatefulWidget {
@@ -32,8 +32,9 @@ class _PageSwitcherState extends State<PageSwitcher> {
     Widget body() {
       return [
         HomePage(),
-        authProvider.getUser!.level.toLowerCase() == 'petfinder'
-            ? const PartnershipRegister()
+        authProvider.getUser == null ||
+                authProvider.getUser!.level.toLowerCase() == 'petfinder'
+            ? const PartnerHelloPage()
             : PartnerPage(),
       ][_currentIndex];
     }
