@@ -8,6 +8,7 @@ import 'package:pedo/core/controller/image_controller.dart';
 import 'package:pedo/core/providers/animal_provider.dart';
 import 'package:pedo/core/providers/article_provider.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
+import 'package:pedo/core/providers/notification_provider.dart';
 import 'package:pedo/core/providers/partner_post_provider.dart';
 import 'package:pedo/core/providers/partner_provider.dart';
 import 'package:pedo/core/providers/partner_register_provider.dart';
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => PartnerRegisterProvider()),
         ChangeNotifierProvider(create: (context) => PartnerProvider()),
         ChangeNotifierProvider(create: (context) => PartnerPostProvider()),
+        ChangeNotifierProvider(create: (context) => NotificationProvider()),
         // =========================== Controller =========================== //
         ChangeNotifierProvider(create: (context) => ImageController()),
       ],

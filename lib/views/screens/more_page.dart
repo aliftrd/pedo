@@ -109,10 +109,32 @@ class MorePage extends StatelessWidget {
                       ),
                     ),
                     onTap: () async {
-                      authProvider.logout();
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: const Text('Anda yakin ingin keluar?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Tidak'),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  authProvider.logout();
 
-                      Navigator.pop(context);
-                      Navigator.pushReplacementNamed(context, LoginPage.route);
+                                  Navigator.pop(context);
+                                  Navigator.pushReplacementNamed(
+                                      context, LoginPage.route);
+                                },
+                                child: const Text('Ya'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
                   ),
                 ],

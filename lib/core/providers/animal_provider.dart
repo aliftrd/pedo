@@ -67,7 +67,6 @@ class AnimalProvider extends ChangeNotifier {
 
       var response = await Endpoint.urlAnimal(page: currentPage.toString());
       if (response['code'] == 200) {
-        List<AnimalModel> animals = [];
         for (var animal in response['data']['data']) {
           _animals.add(AnimalModel.fromJson(animal));
         }

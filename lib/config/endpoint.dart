@@ -174,4 +174,15 @@ class Endpoint {
       body: body,
     );
   }
+
+  static urlNotification({
+    String? page,
+  }) async {
+    return Network().get(
+      url: 'notifications.php',
+      params: {
+        'page': page.toString(),
+      },
+    );
+  }
 }

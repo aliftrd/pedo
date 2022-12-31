@@ -1,4 +1,5 @@
 import 'package:pedo/views/screens/article/article_page.dart';
+import 'package:pedo/views/screens/notification_page.dart';
 import 'package:pedo/views/screens/partner/partner_post_page.dart';
 import 'package:pedo/views/screens/partner/partner_register_page.dart';
 import 'package:pedo/views/screens/partner/partner_thankyou_page.dart';
@@ -27,4 +28,5 @@ dynamic routes = {
   PartnerThankyouPage.route: (context) => const PartnerThankyouPage(),
   PartnerPostPage.route: (context) => const PartnerPostPage(),
   AnimalPage.route: (context) => const AnimalPage(),
+  NotificationPage.route: (context) => const NotificationPage(),
 };

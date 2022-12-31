@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/providers/auth_provider.dart';
 import 'package:pedo/views/screens/more_page.dart';
+import 'package:pedo/views/screens/notification_page.dart';
 import 'package:provider/provider.dart';
 
 class CustomAppBar extends StatelessWidget {
@@ -67,7 +68,10 @@ class CustomAppBar extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () => Navigator.pushNamed(
+                context,
+                NotificationPage.route,
+              ),
               icon: Icon(
                 Icons.notifications,
                 color: colorSubtitle,

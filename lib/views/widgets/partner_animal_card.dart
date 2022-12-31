@@ -25,12 +25,36 @@ class PartnerAnimalCard extends StatelessWidget {
     PartnerProvider partnerProvider = Provider.of<PartnerProvider>(context);
     AnimalModel animals = partnerProvider.findById(animalId);
 
-    void adoptedHandle() async {
-      await Provider.of<PartnerPostProvider>(context, listen: false)
-          .updateAdoptAnimal(
-        animalId: animalId.toString(),
+    void adoptedHandle() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: const Text(
+                'Apakah anda yakin?\nHewan yang sudah teradopsi tidak dapat diubah kembali.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Tidak'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  await Provider.of<PartnerPostProvider>(context, listen: false)
+                      .updateAdoptAnimal(
+                    animalId: animalId.toString(),
+                  );
+                  partnerProvider.getPartnerAnimal(
+                      status: status, isRefresh: true);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Ya'),
+              ),
+            ],
+          );
+        },
       );
-      partnerProvider.getPartnerAnimal(status: status, isRefresh: true);
     }
 
     return Container(
