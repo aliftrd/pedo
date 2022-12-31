@@ -19,6 +19,9 @@ class MorePage extends StatelessWidget {
       backgroundColor: background,
       body: SafeArea(
         child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
           slivers: [
             SliverAppBar(
               elevation: 0,

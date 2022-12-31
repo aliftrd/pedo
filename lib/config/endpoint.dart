@@ -150,4 +150,28 @@ class Endpoint {
       body: body,
     );
   }
+
+  static urlAnimalEdit(
+    Map<String, dynamic> body,
+  ) async {
+    return Network().post(
+      url: 'partners.php',
+      params: {
+        'method': 'update',
+      },
+      body: body,
+    );
+  }
+
+  static urlAnimalAdopt(
+    Map<String, dynamic> body,
+  ) async {
+    return Network().post(
+      url: 'partners.php',
+      params: {
+        'method': 'adopted',
+      },
+      body: body,
+    );
+  }
 }

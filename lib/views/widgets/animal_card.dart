@@ -23,11 +23,13 @@ class AnimalCard extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return AnimalDetailPage(
-            animalDetail: animalProvider,
-          );
-        }));
+        Navigator.push(context, MaterialPageRoute(
+          builder: (context) {
+            return AnimalDetailPage(
+              animalDetail: animalProvider,
+            );
+          },
+        ));
       },
       child: Container(
         margin: margin,

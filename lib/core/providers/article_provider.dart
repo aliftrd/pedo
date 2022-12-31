@@ -20,7 +20,7 @@ class ArticleProvider extends ChangeNotifier {
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
-        if (!isLastPage) {
+        if (articles.isNotEmpty && isLastPage != true) {
           getArticles(isHome: false);
         }
       }

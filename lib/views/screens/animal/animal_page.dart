@@ -4,6 +4,7 @@ import 'package:pedo/constant/themes.dart';
 import 'package:pedo/core/providers/animal_provider.dart';
 import 'package:pedo/views/widgets/animal_card.dart';
 import 'package:pedo/views/widgets/animal_skeleton_card.dart';
+import 'package:pedo/views/widgets/errors.dart';
 import 'package:provider/provider.dart';
 
 class AnimalPage extends StatelessWidget {
@@ -16,41 +17,23 @@ class AnimalPage extends StatelessWidget {
 
     Widget buildAnimalCard() {
       return SliverToBoxAdapter(
-        child: animalProvider.isLoading
-            ? Container(
-                padding: EdgeInsets.symmetric(horizontal: defaultMargin),
-                child: StaggeredGrid.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                  children: List.generate(
-                    3,
-                    (index) => AnimalSkeletonCard(
-                      margin: index.bitLength == 2
-                          ? EdgeInsets.only(bottom: defaultMargin)
-                          : null,
-                    ),
-                  ),
-                ),
-              )
-            : Container(
-                padding: EdgeInsets.symmetric(horizontal: defaultMargin),
-                child: StaggeredGrid.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                  children: List.generate(
-                    animalProvider.animals.length,
-                    (index) => AnimalCard(
-                      animalId: animalProvider.animals[index].id,
-                      margin: animalProvider.animals[index] ==
-                              animalProvider.animals.last
-                          ? EdgeInsets.only(bottom: defaultMargin)
-                          : null,
-                    ),
-                  ),
-                ),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: defaultMargin),
+          child: StaggeredGrid.count(
+            crossAxisCount: 2,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20,
+            children: List.generate(
+              animalProvider.animals.length,
+              (index) => AnimalCard(
+                animalId: animalProvider.animals[index].id,
+                margin: index == animalProvider.animals.length - 1
+                    ? EdgeInsets.only(bottom: defaultMargin)
+                    : null,
               ),
+            ),
+          ),
+        ),
       );
     }
 
@@ -91,7 +74,31 @@ class AnimalPage extends StatelessWidget {
                   ),
                 ),
               ),
-              buildAnimalCard()
+              animalProvider.isLoading
+                  ? SliverToBoxAdapter(
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: defaultMargin),
+                        child: StaggeredGrid.count(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 20,
+                          children: List.generate(
+                            3,
+                            (index) => AnimalSkeletonCard(
+                              margin: index.bitLength == 2
+                                  ? EdgeInsets.only(bottom: defaultMargin)
+                                  : null,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : animalProvider.animals.isEmpty
+                      ? SliverFillRemaining(
+                          child: Errors.noDataFound(),
+                        )
+                      : buildAnimalCard()
             ],
           ),
         ),

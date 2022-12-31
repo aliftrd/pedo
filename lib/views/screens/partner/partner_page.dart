@@ -35,7 +35,8 @@ class _PartnerPageState extends State<PartnerPage> {
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
-        if (!partnerProvider.isLastPage) {
+        if (partnerProvider.animals.isNotEmpty &&
+            partnerProvider.isLastPage != true) {
           partnerProvider.getPartnerAnimal(
               status: tabItems[selectedItem]['value']);
         }
@@ -64,6 +65,7 @@ class _PartnerPageState extends State<PartnerPage> {
             separatorBuilder: (_, index) => const SizedBox(height: 20),
             itemCount: partnerProvider.animals.length,
             itemBuilder: (context, index) => PartnerAnimalCard(
+                  status: tabItems[selectedItem]['value'],
                   animalId: partnerProvider.animals[index].id,
                   margin: EdgeInsets.only(
                     top: partnerProvider.animals.first ==

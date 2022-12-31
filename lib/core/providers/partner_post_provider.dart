@@ -61,6 +61,69 @@ class PartnerPostProvider extends ChangeNotifier {
     }
   }
 
+  Future updateAnimal({
+    required String animalId,
+    required String animalName,
+    required String animalDescription,
+    required String animalTypeId,
+    required String animalBreedId,
+    required String animalGender,
+    required String animalColorPrimary,
+    required String animalColorSecondary,
+    required String animalIsPaid,
+    required String animalPrice,
+    required List<File> animalImages,
+  }) async {
+    try {
+      List images = [];
+      for (File animalImage in animalImages) {
+        images.add(base64Encode(animalImage.readAsBytesSync()));
+      }
+
+      Map<String, dynamic> body = {
+        'id': animalId,
+        'images': images,
+        'animal_type_id': animalTypeId,
+        'animal_breed_id': animalBreedId,
+        'title': animalName,
+        'description': animalDescription,
+        'is_paid': animalIsPaid,
+        'price': animalPrice,
+        'gender': animalGender,
+        'primary_color': animalColorPrimary,
+        'secondary_color': animalColorSecondary,
+      };
+
+      var response = await Endpoint.urlAnimalEdit(body);
+      if (response['code'] == 200) {
+        return response;
+      } else {
+        return response;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future updateAdoptAnimal({
+    required String animalId,
+  }) async {
+    try {
+      Map<String, dynamic> body = {
+        'id': animalId,
+      };
+
+      var response = await Endpoint.urlAnimalAdopt(body);
+      if (response['code'] == 200) {
+        return response;
+      } else {
+        return response;
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   Future<void> getAnimalType() async {
     try {
       var response = await Endpoint.urlAnimalType();

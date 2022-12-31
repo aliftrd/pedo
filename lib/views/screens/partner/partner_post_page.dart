@@ -2,22 +2,28 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart';
 import 'package:pedo/constant/themes.dart';
 import 'package:pedo/constant/variable.dart';
 import 'package:pedo/core/controller/image_controller.dart';
 import 'package:pedo/core/models/animal_breed_model.dart';
+import 'package:pedo/core/models/animal_model.dart';
 import 'package:pedo/core/models/animal_type_model.dart';
 import 'package:pedo/core/providers/partner_post_provider.dart';
+import 'package:pedo/core/providers/partner_provider.dart';
 import 'package:pedo/utils/validation.dart';
 import 'package:pedo/views/widgets/button.dart';
 import 'package:pedo/views/widgets/input_container.dart';
 import 'package:pedo/views/widgets/input_validation.dart';
 import 'package:pedo/views/widgets/loading_button.dart';
 import 'package:provider/provider.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PartnerPostPage extends StatefulWidget {
   static String route = '/partner-post';
-  const PartnerPostPage({Key? key}) : super(key: key);
+  final AnimalModel? animal;
+  final String? status;
+  const PartnerPostPage({Key? key, this.animal, this.status}) : super(key: key);
 
   @override
   State<PartnerPostPage> createState() => _PartnerPostPageState();
@@ -47,6 +53,42 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
     'colorSecondary': '',
     'price': '',
   };
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.animal != null) {
+      fetchUpdatedData();
+    }
+  }
+
+  fetchUpdatedData() async {
+    setState(() {
+      isLoading = true;
+      isPaid = widget.animal!.isPaid;
+    });
+
+    if (widget.animal != null) {
+      for (var image in widget.animal!.images) {
+        var response = await get(Uri.parse(image.path));
+        var documentDirectory = await getApplicationDocumentsDirectory();
+        int startIndex = image.path.indexOf('animals/') + 'animals/'.length;
+        String fileName = image.path.substring(startIndex);
+        var file = File('${documentDirectory.path}/$fileName.jpg');
+        await file.writeAsBytes(response.bodyBytes);
+
+        if (!mounted) return;
+        setState(() {
+          _images.add(file);
+        });
+      }
+
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -79,7 +121,21 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
 
       String name = _nameController.text,
           description = _descriptionController.text,
-          price = _priceController.text;
+          price = _priceController.text,
+          type = widget.animal != null
+              ? widget.animal!.type.id.toString()
+              : selectedType!,
+          breed = widget.animal != null
+              ? widget.animal!.breed.id.toString()
+              : selectedBreed!,
+          gender =
+              widget.animal != null ? widget.animal!.gender : selectedGender!,
+          colorPrimary = widget.animal != null
+              ? widget.animal!.primaryColor
+              : selectedColorPrimary!,
+          colorSecondary = widget.animal != null
+              ? widget.animal!.secondaryColor
+              : selectedColorSecondary!;
 
       if (_images.isEmpty) {
         setState(() {
@@ -111,7 +167,7 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
         });
       }
 
-      if (selectedType == null) {
+      if (type.isEmpty) {
         setState(() {
           validator = true;
           validatorMessage['type'] = 'Tipe tidak boleh kosong';
@@ -119,7 +175,7 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
         });
       }
 
-      if (selectedBreed == null) {
+      if (breed.isEmpty) {
         setState(() {
           validator = true;
           validatorMessage['breed'] = 'Breed tidak boleh kosong';
@@ -127,7 +183,7 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
         });
       }
 
-      if (selectedGender == null) {
+      if (gender.isEmpty) {
         setState(() {
           validator = true;
           validatorMessage['gender'] = 'Gender tidak boleh kosong';
@@ -135,7 +191,7 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
         });
       }
 
-      if (selectedColorPrimary == null) {
+      if (colorPrimary.isEmpty) {
         setState(() {
           validator = true;
           validatorMessage['colorPrimary'] = 'Warna tidak boleh kosong';
@@ -143,7 +199,7 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
         });
       }
 
-      if (selectedColorSecondary == null) {
+      if (colorSecondary.isEmpty) {
         setState(() {
           validator = true;
           validatorMessage['colorSecondary'] = 'Warna tidak boleh kosong';
@@ -162,25 +218,51 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
       }
 
       if (!validator) {
-        var response = await partnerPostProvider.addAnimal(
-          animalName: name,
-          animalDescription: description,
-          animalTypeId: selectedType!,
-          animalBreedId: selectedBreed!,
-          animalGender: selectedGender!,
-          animalColorPrimary: selectedColorPrimary!,
-          animalColorSecondary: selectedColorSecondary!,
-          animalIsPaid: isPaid ? '1' : '0',
-          animalPrice: Validation.isNull(price) ? '0' : price,
-          animalImages: _images,
-        );
+        if (widget.animal == null) {
+          var response = await partnerPostProvider.addAnimal(
+            animalName: name,
+            animalDescription: description,
+            animalTypeId: type,
+            animalBreedId: breed,
+            animalGender: gender,
+            animalColorPrimary: colorPrimary,
+            animalColorSecondary: colorSecondary,
+            animalIsPaid: isPaid ? '1' : '0',
+            animalPrice: Validation.isNull(price) ? '0' : price,
+            animalImages: _images,
+          );
 
-        if (response['code'] == 200) {
-          Navigator.pop(context);
+          if (response['code'] == 200) {
+            Navigator.pop(context);
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+          }
         } else {
-          setState(() {
-            isLoading = false;
-          });
+          var response = await partnerPostProvider.updateAnimal(
+            animalId: widget.animal!.id.toString(),
+            animalName: name,
+            animalDescription: description,
+            animalTypeId: type,
+            animalBreedId: breed,
+            animalGender: gender,
+            animalColorPrimary: colorPrimary,
+            animalColorSecondary: colorSecondary,
+            animalIsPaid: isPaid ? '1' : '0',
+            animalPrice: Validation.isNull(price) ? '0' : price,
+            animalImages: _images,
+          );
+
+          if (response['code'] == 200) {
+            Provider.of<PartnerProvider>(context, listen: false)
+              ..getPartnerAnimal(status: widget.status!, isRefresh: true);
+            Navigator.pop(context);
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+          }
         }
       }
     }
@@ -280,7 +362,7 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
         margin: const EdgeInsets.only(top: 20.0),
         child: TextFormField(
           style: primaryTextStyle,
-          controller: _nameController,
+          controller: _nameController..text = widget.animal?.title ?? '',
           maxLength: 128,
           maxLines: null,
           decoration: InputDecoration(
@@ -307,7 +389,8 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
         margin: const EdgeInsets.only(top: 10.0),
         child: TextFormField(
           style: primaryTextStyle,
-          controller: _descriptionController,
+          controller: _descriptionController
+            ..text = widget.animal?.description ?? '',
           maxLength: 3000,
           maxLines: null,
           decoration: InputDecoration(
@@ -334,7 +417,7 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
         child: InputContainer(
           margin: const EdgeInsets.only(top: 10.0),
           widget: DropdownButton<String>(
-            hint: const Text('Tipe'),
+            hint: Text(widget.animal?.type.title ?? 'Tipe'),
             value: selectedType,
             isExpanded: true,
             menuMaxHeight: 250,
@@ -362,7 +445,7 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
         child: InputContainer(
           margin: const EdgeInsets.only(top: 10.0),
           widget: DropdownButton<String>(
-            hint: const Text('Ras'),
+            hint: Text(widget.animal?.breed.title ?? 'Ras'),
             value: selectedBreed,
             isExpanded: true,
             menuMaxHeight: 250,
@@ -386,7 +469,7 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
       return InputContainer(
         margin: const EdgeInsets.only(top: 10.0),
         widget: DropdownButton<String>(
-          hint: const Text('Gender'),
+          hint: Text(widget.animal?.gender ?? 'Gender'),
           value: selectedGender,
           isExpanded: true,
           menuMaxHeight: 250,
@@ -409,7 +492,7 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
         child: InputContainer(
           margin: const EdgeInsets.only(top: 10.0),
           widget: DropdownButton<String>(
-            hint: const Text('Warna Primer'),
+            hint: Text(widget.animal?.primaryColor ?? 'Warna Primer'),
             value: selectedColorPrimary,
             isExpanded: true,
             menuMaxHeight: 250,
@@ -433,7 +516,7 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
         child: InputContainer(
           margin: const EdgeInsets.only(top: 10.0),
           widget: DropdownButton<String>(
-            hint: const Text('Warna Sekunder'),
+            hint: Text(widget.animal?.type.title ?? 'Warna Sekunder'),
             value: selectedColorSecondary,
             isExpanded: true,
             menuMaxHeight: 250,
@@ -457,7 +540,8 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
         margin: const EdgeInsets.only(top: 15.0),
         child: TextFormField(
           style: primaryTextStyle,
-          controller: _priceController,
+          controller: _priceController
+            ..text = widget.animal?.price.toString() ?? '',
           maxLength: 128,
           maxLines: null,
           keyboardType: TextInputType.number,
@@ -484,8 +568,9 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
     }
 
     void onBackHandle() async {
-      for (File image in _images) {
-        await image.delete();
+      for (var i = 0; i < _images.length; i++) {
+        await _images[i].delete();
+        _images.removeAt(i);
       }
       Navigator.pop(context);
     }
@@ -637,7 +722,7 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
                             ),
                           ),
                           Checkbox(
-                            value: isPaid,
+                            value: widget.animal?.isPaid ?? isPaid,
                             onChanged: (bool? value) {
                               setState(() {
                                 isPaid = value!;
@@ -659,7 +744,8 @@ class _PartnerPostPageState extends State<PartnerPostPage> {
                             margin:
                                 const EdgeInsets.only(top: 20.0, bottom: 20.0),
                             child: PrimaryButton(
-                              text: 'Tambahkan',
+                              text:
+                                  widget.animal == null ? 'Tambahkan' : 'Ubah',
                               onPressed: onSubmitHandle,
                             ),
                           ),

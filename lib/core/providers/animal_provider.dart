@@ -20,7 +20,7 @@ class AnimalProvider extends ChangeNotifier {
     scrollController.addListener(() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
-        if (!isLastPage) {
+        if (animals.isNotEmpty && isLastPage != true) {
           getAnimals(isHome: false);
         }
       }
