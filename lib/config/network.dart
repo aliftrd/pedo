@@ -89,7 +89,6 @@ class Network {
       body: sendBody,
     );
 
-    debugPrint(response.body);
     return jsonDecode(response.body);
   }
 }

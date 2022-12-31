@@ -125,6 +125,7 @@ class MorePage extends StatelessWidget {
                                 onPressed: () async {
                                   authProvider.logout();
 
+                                  Navigator.of(context).pop();
                                   Navigator.pop(context);
                                   Navigator.pushReplacementNamed(
                                       context, LoginPage.route);
