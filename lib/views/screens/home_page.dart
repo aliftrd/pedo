@@ -44,7 +44,7 @@ class HomePage extends StatelessWidget {
                 articleProvider.getArticles();
                 Navigator.pushNamed(context, ArticlePage.route);
               },
-              child: Badge(
+              child: CustomBadge(
                 text: 'Lihat Semua',
                 borderColor: colorSubtitle,
                 textColor: colorLight,
@@ -112,7 +112,7 @@ class HomePage extends StatelessWidget {
                 animalProvider.getAnimals();
                 Navigator.pushNamed(context, AnimalPage.route);
               },
-              child: Badge(
+              child: CustomBadge(
                 text: 'Lihat Semua',
                 borderColor: colorSubtitle,
                 textColor: colorLight,

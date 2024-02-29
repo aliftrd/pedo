@@ -37,7 +37,7 @@ class ArticleDetailPage extends StatelessWidget {
           ),
           Row(
             children: articleDetail.categories.map((category) {
-              return Badge(
+              return CustomBadge(
                 text: category.title,
                 borderColor: colorPrimary,
                 margin: EdgeInsets.only(

@@ -109,7 +109,7 @@ class PartnerAnimalCard extends StatelessWidget {
                         const SizedBox(
                           height: 5,
                         ),
-                        Badge(
+                        CustomBadge(
                           text: animals.type.title,
                           borderColor: colorPrimary,
                         ),

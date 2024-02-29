@@ -31,7 +31,7 @@ class CustomTabView extends StatelessWidget {
           itemCount,
           (index) => InkWell(
             onTap: () => onTap(item[index]['id']),
-            child: Badge(
+            child: CustomBadge(
               text: item[index]['title'],
               borderColor: selectedTab == index ? colorSubtitle : null,
               textColor: selectedTab == index ? colorLight : colorSubtitle,

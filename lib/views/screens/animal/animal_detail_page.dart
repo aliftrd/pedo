@@ -126,7 +126,7 @@ class AnimalDetailPage extends StatelessWidget {
                     ),
                     child: Icon(
                       size: 18,
-                      Icons.whatsapp,
+                      Icons.phone,
                       color: colorLight,
                     ),
                   ),

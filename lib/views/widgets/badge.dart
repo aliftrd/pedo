@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pedo/constant/themes.dart';
 
-class Badge extends StatelessWidget {
+class CustomBadge extends StatelessWidget {
   final String text;
   EdgeInsetsGeometry? margin;
   Color? borderColor, textColor;
 
-  Badge({required this.text, this.margin, this.borderColor, this.textColor});
+  CustomBadge(
+      {required this.text, this.margin, this.borderColor, this.textColor});
   @override
   Widget build(BuildContext context) {
     return Container(
